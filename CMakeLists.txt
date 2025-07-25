@@ -7,6 +7,19 @@ set(PROJ_DESC DESCRIPTION "stripped down implementation of riscV.")
 
 project(${PROJ_NAME} ${PROJ_DESC} ${PROJ_LANG} ${PROJ_VERS})
 
+# use de-oxygen for auto documentation from doc-strings.
+find_package(Doxygen REQUIRED)
+set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/DOXYFILE     )
+set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/DOXYFILE    )
+configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+
+add_custom_target(DOCUMENTATION ALL
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating API documentation with Doxygen"
+    VERBATIM
+)
+
 # every part of this project is standalone implementation there is to be no external or
 # internal inter-executable dependencies, every (ASSEMBLER, DEBUGGER, SIMULATOR) are executable.
 # each executable has its own purpose, and requires seperate implementation.
