@@ -1,0 +1,96 @@
+PROGRAM     :MULTILINE:= SECTION
+SECTION     :MULTILINE:= DOTTEXT SECTION
+                      || DOTDATA SECTION
+                      || DOT_BSS SECTION
+                      || %EMPTY
+DOTTEXT     :MULTILINE:= ".text:".FORCE_CASE DECORATIONS FOLLOWED{INSTRUCTIONS || LABELS ":" || DECORATIONS}
+DOTDATA     :MULTILINE:= ".data:".FORCE_CASE DECORATIONS FOLLOW{DECLARATIONS || DECORATIONS}
+
+// DECORATIONS/COMMETS ----------------------------------------------------------
+DECORATIONS :STATEMENT:= ";;" SENTENCE || %EMPTY
+ALPHABETS   :TERMINALS:= "A" || "B" || "C" || "D" || "E"
+                      || "F" || "G" || "H" || "I" || "J"
+	                  || "K" || "L" || "M" || "N" || "O"
+                      || "P" || "Q" || "R" || "S" || "T"
+                      || "U" || "V" || "W" || "X" || "Y"
+                      || "Z"
+NUMERIC     :TERMINALS:= "0" || "1" || "2" || "3" || "4"
+                      || "5" || "6" || "7" || "8" || "9" 
+SYMBOLS     :TERMINALS:= "," || "." || ";" || ":" || "!" || "?" 
+                      || "-" || "_" || "(" || ")" || "[" || "]"
+                      || "{" || "}" || "'" || "\"" || "/" || "\\"
+                      || "+" || "*" || "=" || "<" || ">" || "|" 
+                      || "&" || "%" || "$" || "#" || "@" || "^" 
+                      || "~" || "`" || " "
+ANY         :TERMINALS:= ALPHABETS 
+                      || NUMERIC 
+                      || SYMBOLS 
+SENTENCE    :STATEMENT:= ANY SENTENCE 
+                      || ANY %EMPTY
+// -------------------------------------------------------------------------------
+// LABELS ------------------------------------------------------------------------
+ALPHANUMERIC:TERMINALS:= ALPHABETS 
+                      || NUMERIC
+WORD        :STATEMENT:= ALPHANUMERIC WORD 
+                      || ALPHANUMERIC %EMPTY
+LABELS      :STATEMENT:= ALPHABETS WORD
+                      || ALPHABETS %EMPTY
+// -------------------------------------------------------------------------------
+// INSTRUCTIONS ------------------------------------------------------------------
+INSTRUCTIONS:STATEMENT:= rTYPE DECORATIONS
+                      || iTYPE DECORATIONS
+                      || jTYPE DECORATIONS
+                      || sTYPE DECORATIONS
+                      || bTYPE DECORATIONS
+                      || uTYPE DECORATIONS
+rTYPE       :STATEMENT:= rINSTRUCTION REGISTER "," REGISTER "," REGISTER
+iTYPE       :STATEMENT:= iINSTRUCTION REGISTER "," REGISTER "," IMMEDIATE
+sTYPE       :STATEMENT:= sINSTRUCTION REGISTER "," REGISTER "," IMMEDIATE || ...
+bTYPE       :STATEMENT:= bINSTRUCTION REGISTER "," REGISTER "," IMMEDIATE
+                      || bINSTRUCTION REGISTER "," REGISTER "," LABELS
+jTYPE       :STATEMENT:= jINS_SET_ONE REGISTER "," IMMEDIATE
+                      || jINS_SET_ONE REGISTER "," LABELS
+                      || jINS_SET_TWO REGISTER "," REGISTER "," IMMEDIATE
+                      || jINS_SET_TWO REGISTER "," REGISTER "," LABELS
+uTYPE       :STATEMENT:= uINSTRUCTION REGISTER "," IMMEDIATE
+                      || uINSTRUCTION REGISTER "," LABELS
+rINSTRUCTION:STATEMENT:=
+iINSTRUCTION:STATEMENT:=
+sINSTRUCTION:STATEMENT:=
+bINSTRUCTION:STATEMENT:=
+jINS_SET_ONE:STATEMENT:=
+jINS_SET_TWO:STATEMENT:=
+uINSTRUCTION:STATEMENT:=
+// -------------------------------------------------------------------------------
+// NUMBERS -----------------------------------------------------------------------
+DECIMAL     :STATEMENT:= NUMERIC DECIMAL || NUMERIC %EMPTY
+BINARY      :STATEMENT:= NUMERIC["0":"1"] BINARY || NUMERIC["0":"1"] %EMPTY
+OCTAL       :STATEMENT:= NUMERIC["0":"8"] OCTAL || NUMERIC["0":"8"] %EMPTY
+HEXADECIMAL :STATEMENT:= ALPHANUMERIC["0":"F"] HEXADECIMAL || ALPHANUMERIC["0":"F"] %EMPTY
+IMMEDIATE   :STATEMENT:= DECIMAL
+                      || "0x" HEXADECIMAL
+                      || "0b" BINARY
+                      || "0o" OCTAL
+NUMBER     :STATEMENT:= IMMEDIATE
+// -------------------------------------------------------------------------------
+// DECLARATIONS ------------------------------------------------------------------
+DECLARATIONS:STATEMENT:= LABEL ":" ASSIGNMENT DECORATIONS
+ASSIGNMENT  :STATEMENT:= DOTBYTE
+                      || DOTHALF
+                      || DOTWORD
+                      || DOTASCII
+                      || DOTSPACE
+                      || DOTALIGN
+                      || DOTDOUBLE
+                      || DOTSTRING
+CHARACHTERS :STATEMENT:= "'" ANY "'" || "," CHARACHTERS
+NUMBERS     :STATEMENT:= "," NUMBER || "," NUMBERS
+DOTBYTE     :STATEMENT:= ".byte".FORCE_CASE CHARACHTERS
+DOTHALF     :STATEMENT:= ".half".FORCE_CASE NUMBER NUMBERS
+DOTWORD     :STATEMENT:= ".word".FORCE_CASE NUMBER NUMBERS
+// TODO: Define all those listed above "PLEASE"
+
+.text:                              ;; comments here
+    add rax, rbc, rcx               ;; this add a to b
+.data:
+    lbl: .string "hfailvahu dv"
