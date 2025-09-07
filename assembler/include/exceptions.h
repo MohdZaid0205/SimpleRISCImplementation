@@ -46,19 +46,15 @@ struct _highlight_metadata {
 	} msg, ctx, des, com;
 };
 
-unsigned int _h__information_str(const char* message, const char* what);
-unsigned int _h__information_end(const char* message, const char* what);
-
 struct _annotated_metadata {
 	struct _a__information {
-		unsigned int chr;	// start for sequence to annotate.
+		unsigned int str;	// start for sequence to annotate.
 		const char * ann;	// annotation text to the chr.
 	} msg, ctx, des, com;
 };
 
-unsigned int _a__information_str(const char* message, const char* what);
-unsigned int _a__information_ann(const char* message, unsigned int off);
-
+// helper function to deal with string and pattern matching
+unsigned int __find_string_string(const char* string, const char* in);
 
 // trace creation: produce trace objects in different modes
 Trace* __create_formatted_trace(
@@ -72,6 +68,7 @@ Trace*__create_highlight_trace(
 
 Trace* __create_annotated_trace(
 	const char* msg, const char* ctx, const char* des, const char* com,
+	const char* m_w, const char* x_w, const char* d_w, const char* c_w,
 	const char* m_a, const char* x_a, const char* d_a, const char* c_a
 );
 

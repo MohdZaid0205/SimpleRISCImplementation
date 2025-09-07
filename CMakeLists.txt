@@ -47,3 +47,10 @@ file(GLOB DEBUGGER_FILES "${DEBUGGER_SRC_DIR}/*.c" "${DEBUGGER_INC_DIR}/*.h")
 
 add_executable(DEBUGGER ${DEBUGGER_FILES})
 target_include_directories(DEBUGGER PRIVATE ${DEBUGGER_INC_DIR})
+
+# For predefined targets
+foreach(predef_target ALL_BUILD ZERO_CHECK INSTALL PACKAGE RUN_TESTS)
+    if(TARGET ${predef_target})
+        set_target_properties(${predef_target} PROPERTIES FOLDER "CMake Predefined Targets")
+    endif()
+endforeach()
