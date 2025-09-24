@@ -36,7 +36,7 @@
 // Punctuations
 // 0b00VV_0000_         [BBBB_BBBB]
 //     ^^     [AAAA_AAAA]         [CCCC_CCCC] 
-//     ||     A B or C can also be used simultaneously, for complexly long puctuations. (this line is useless)
+//     ||     A B or C can also be used simultaneously, for complexly long puctuations.
 //     ++---> to tell which of the byte holds the value for punctuation in case of conflict.
 #define INF_PUN_MASK      0b00111111000000000000000000000000
 #define INF_PUN_MASK_SIZE 0b00110000000000000000000000000000
@@ -90,5 +90,26 @@
 #define INF_KWD_MAKE_CASE(s) ((s << 29) & INF_KWD_MASK_CASE)
 #define INF_KWD_READ_SPCE(s) ((INF_KWD_MASK_SPCE & s) >> 28)
 #define INF_KWD_MAKE_SPCE(s) ((s << 28) & INF_KWD_MASK_SPCE)
+
+// TODO: implement proper supposrt for table referncing, maybe repurpose RAX, RBX, RCX
+extern const char** LiteralFrntTable;
+extern const char** LiteralBackTable;
+extern char* (*LiteralCollectors)(int);
+extern char* (*LiteralValidators)(int);
+
+// following is part defining all the token types that are allowed as per our implementation of assembler.
+// all tokens must belong to one of the classification and must satisfy all defined parameters explicitly.
+enum Tokens {
+
+#pragma region PUNCTUATIONS
+	TOKEN(TOKEN_COMMA   , CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE(','), RSB_MAKE(0), RSC_MAKE(0)),
+	TOKEN(TOKEN_COLON   , CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE(':'), RSB_MAKE(0), RSC_MAKE(0)),
+	TOKEN(TOKEN_L_ROUND , CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE('('), RSB_MAKE(0), RSC_MAKE(0)),
+	TOKEN(TOKEN_R_ROUND , CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE(')'), RSB_MAKE(0), RSC_MAKE(0)),
+	TOKEN(TOKEN_L_SQUARE, CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE('['), RSB_MAKE(0), RSC_MAKE(0)),
+	TOKEN(TOKEN_R_SQUARE, CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE(']'), RSB_MAKE(0), RSC_MAKE(0)),
+#pragma endregion
+
+};
 
 #endif
