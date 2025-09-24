@@ -3,20 +3,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define COL_TRACE_PR(x, c, e)	printf("%.*s%s", __meta->x.str, __trace->x, c);\
-						printf("%.*s", __meta->x.end - __meta->x.str, __trace->x + __meta->x.str);\
-						printf("%s%s\n", e, __trace->x + __meta->x.end)
+#define COL_TRACE_PR(trace, meta, x, c, e, p)\
+		printf("%s%.*s%s", p, meta->x.str, trace->x, c);\
+		printf("%.*s", meta->x.end - meta->x.str, trace->x + meta->x.str);\
+		printf("%s%s\n", e, trace->x + meta->x.end)
 
 
 
-unsigned int __find_string_string(const char* string, const char* in){
-	unsigned int* __bad_value = malloc(sizeof(unsigned int) * 256);
-	if (!__bad_value)
-		return 0;
-	size_t len_in = strlen(in), len_str = strlen(string);
-	// populate bad map table with value size(in) - i + 1
-	for (int i = 0; i < len_in; i++) {
-		__bad_value[in[i]] = len_in - i + 1;
+unsigned int __find_string_string(const char* pattern, const char* text){
+	int m = strlen(pattern), n = strlen(text);
+	if (m == 0) return 0;
+	if (m >  n) return 0;
+
+	for (size_t i = 0; i <= n - m; ++i) {
+		size_t j = 0;
+		for (; j < m; ++j) {
+			if (text[i + j] != pattern[j]) break;
+		}
+		if (j == m) return (unsigned int)i;
 	}
 	return 0;
 }
@@ -42,14 +46,14 @@ Trace* __create_highlight_trace(
 	struct _highlight_metadata* _metadata = malloc(sizeof(struct _highlight_metadata));
 	if (!_metadata)
 		return __trace;
-	_metadata->msg.str = __find_string_string(msg, m_w);
-	_metadata->ctx.str = __find_string_string(ctx, x_w);
-	_metadata->des.str = __find_string_string(des, d_w);
-	_metadata->com.str = __find_string_string(com, c_w);
-	_metadata->msg.end = __find_string_string(msg, m_w);
-	_metadata->ctx.end = __find_string_string(ctx, x_w);
-	_metadata->des.end = __find_string_string(des, d_w);
-	_metadata->com.end = __find_string_string(com, c_w);
+	_metadata->msg.str = __find_string_string(m_w, msg);
+	_metadata->ctx.str = __find_string_string(x_w, ctx);
+	_metadata->des.str = __find_string_string(d_w, des);
+	_metadata->com.str = __find_string_string(c_w, com);
+	_metadata->msg.end = _metadata->msg.str + strlen(m_w);
+	_metadata->ctx.end = _metadata->ctx.str + strlen(x_w);
+	_metadata->des.end = _metadata->des.str + strlen(d_w);
+	_metadata->com.end = _metadata->com.str + strlen(c_w);
 	__trace->_metadata = _metadata;
 	return __trace;
 }
@@ -77,17 +81,17 @@ Trace* __create_annotated_trace(
 
 void __print_formatted_trace(Trace* __trace){
 	printf("%s\n", __trace->msg);
-	printf("\t%s\n", __trace->ctx);
+	printf("\t\t%s\n", __trace->ctx);
 	printf("\t%s\n", __trace->com);
-	printf("%s\n", __trace->des);
+	printf("\t%s\n", __trace->des);
 }
 
 void __print_highlight_trace(Trace* __trace){
 	struct _highlight_metadata* __meta = __trace->_metadata;
-	COL_TRACE_PR(msg, COLORED_FOREGROUND(255, 255, 170), DEFAULT_FOREGROUND);
-	COL_TRACE_PR(ctx, COLORED_FOREGROUND(255, 170, 170), DEFAULT_FOREGROUND);
-	COL_TRACE_PR(com, COLORED_FOREGROUND(170, 170, 255), DEFAULT_FOREGROUND);
-	COL_TRACE_PR(des, COLORED_FOREGROUND(170, 255, 170), DEFAULT_FOREGROUND);
+	COL_TRACE_PR(__trace, __meta, msg, COLORED_FOREGROUND(255, 150, 150), DEFAULT_FOREGROUND, "\0\0");
+	COL_TRACE_PR(__trace, __meta, ctx, COLORED_FOREGROUND(255, 150, 150), DEFAULT_FOREGROUND, "\t\t");
+	COL_TRACE_PR(__trace, __meta, com, COLORED_FOREGROUND(255, 150, 150), DEFAULT_FOREGROUND, "\t\0");
+	COL_TRACE_PR(__trace, __meta, des, COLORED_FOREGROUND(255, 150, 150), DEFAULT_FOREGROUND, "\t\0");
 }
 
 void __print_annotated_trace(Trace* __trace)
