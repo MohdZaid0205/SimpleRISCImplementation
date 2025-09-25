@@ -96,8 +96,8 @@
 // TODO: implement proper supposrt for table referncing, maybe repurpose RAX, RBX, RCX
 extern const char* LiteralFrntTable[];
 extern const char* LiteralBackTable[];
-extern char* (*LiteralCollectors[])(int);
-extern int   (*LiteralValidators[])(int);
+extern char* (*LiteralCollectors[])(FILE*);
+extern bool  (*LiteralValidators[])(FILE*);
 
 // following is part defining all the token types that are allowed as per our implementation of assembler.
 // all tokens must belong to one of the classification and must satisfy all defined parameters explicitly.

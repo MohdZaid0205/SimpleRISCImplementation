@@ -17,13 +17,13 @@ const char* LiteralBackTable[] = {
 	"\n",	// comment is supposed to terminate on new line
 };
 
-char* literal_strings_collector(int fd);
-char* literal_decnums_collector(int fd);
-char* literal_binnums_collector(int fd);
-char* literal_hexnums_collector(int fd);
-char* literal_comment_collector(int fd);
+char* literal_strings_collector(FILE* fd);
+char* literal_decnums_collector(FILE* fd);
+char* literal_binnums_collector(FILE* fd);
+char* literal_hexnums_collector(FILE* fd);
+char* literal_comment_collector(FILE* fd);
 
-extern char* (*LiteralCollectors[])(int) = {
+char* (*LiteralCollectors[])(FILE*) = {
 	literal_strings_collector,
 	literal_decnums_collector,
 	literal_binnums_collector,
@@ -31,13 +31,13 @@ extern char* (*LiteralCollectors[])(int) = {
 	literal_comment_collector,
 };
 
-int   literal_strings_validator(int fd);
-int   literal_decnums_validator(int fd);
-int   literal_binnums_validator(int fd);
-int   literal_hexnums_validator(int fd);
-int   literal_comment_validator(int fd);
+bool  literal_strings_validator(FILE* fd);
+bool  literal_decnums_validator(FILE* fd);
+bool  literal_binnums_validator(FILE* fd);
+bool  literal_hexnums_validator(FILE* fd);
+bool  literal_comment_validator(FILE* fd);
 
-extern int (*LiteralValidators[])(int) = {
+bool (*LiteralValidators[])(FILE*) = {
 	literal_strings_validator,
 	literal_decnums_validator,
 	literal_binnums_validator,
