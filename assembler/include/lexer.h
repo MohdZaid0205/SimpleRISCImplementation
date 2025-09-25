@@ -66,7 +66,7 @@
 // Literals
 // 0b10FB_0000_         [BBBB_BBBB]
 //     ^^     [AAAA_AAAA]         [CCCC_CCCC]
-//     ||     A and B contains symbols F and B repectively
+//     ||     A and B contains index to symbols F and B repectively
 //     ||     C holds array index of literal handler in literal function table.
 //     |+ --> if back symbol is present.
 //     + ---> if front symbol is present.
@@ -92,10 +92,10 @@
 #define INF_KWD_MAKE_SPCE(s) ((s << 28) & INF_KWD_MASK_SPCE)
 
 // TODO: implement proper supposrt for table referncing, maybe repurpose RAX, RBX, RCX
-extern const char** LiteralFrntTable;
-extern const char** LiteralBackTable;
-extern char* (*LiteralCollectors)(int);
-extern char* (*LiteralValidators)(int);
+extern const char* LiteralFrntTable[];
+extern const char* LiteralBackTable[];
+extern char* (*LiteralCollectors[])(int);
+extern int   (*LiteralValidators[])(int);
 
 // following is part defining all the token types that are allowed as per our implementation of assembler.
 // all tokens must belong to one of the classification and must satisfy all defined parameters explicitly.
@@ -108,6 +108,14 @@ enum Tokens {
 	TOKEN(TOKEN_R_ROUND , CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE(')'), RSB_MAKE(0), RSC_MAKE(0)),
 	TOKEN(TOKEN_L_SQUARE, CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE('['), RSB_MAKE(0), RSC_MAKE(0)),
 	TOKEN(TOKEN_R_SQUARE, CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE(']'), RSB_MAKE(0), RSC_MAKE(0)),
+#pragma endregion
+
+#pragma region LITERALS
+	TOKEN(TOKEN_STRING , CLF_LIT, (INF_LIT_MAKE_FRNT(1) | INF_LIT_MAKE_BACK(1)), RSA_MAKE(0), RSB_MAKE(0), RSC_MAKE(0)),
+	TOKEN(TOKEN_DECNUM , CLF_LIT, (INF_LIT_MAKE_FRNT(1) | INF_LIT_MAKE_BACK(1)), RSA_MAKE(1), RSB_MAKE(1), RSC_MAKE(1)),
+	TOKEN(TOKEN_BINNUM , CLF_LIT, (INF_LIT_MAKE_FRNT(1) | INF_LIT_MAKE_BACK(1)), RSA_MAKE(2), RSB_MAKE(2), RSC_MAKE(2)),
+	TOKEN(TOKEN_HEXNUM , CLF_LIT, (INF_LIT_MAKE_FRNT(1) | INF_LIT_MAKE_BACK(1)), RSA_MAKE(3), RSB_MAKE(3), RSC_MAKE(3)),
+	TOKEN(TOKEN_COMMENT, CLF_LIT, (INF_LIT_MAKE_FRNT(1) | INF_LIT_MAKE_BACK(1)), RSA_MAKE(4), RSB_MAKE(4), RSC_MAKE(4)),
 #pragma endregion
 
 };
