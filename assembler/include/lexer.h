@@ -1,6 +1,8 @@
 #ifndef ASSEMBLER_LEXER_H
 #define ASSEMBLER_LEXER_H
 
+#include "pch.h"
+
 // defining type classifications for lexemes, each lexeme is to collect its data and be reurned with its properties
 // and rules that it must satisfy in order to be considered as tokenizable.
 

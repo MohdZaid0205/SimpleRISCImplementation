@@ -1,7 +1,4 @@
 #include "exceptions.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #define COL_TRACE_PR(trace, meta, x, c, e, p)\
 		printf("%s%.*s%s", p, meta->x.str, trace->x, c);\
@@ -110,7 +107,3 @@ void __remove_annotated_trace(Trace * __trace){
 	free(__trace->_metadata);
 	free(__trace);
 }
-
-
-
-

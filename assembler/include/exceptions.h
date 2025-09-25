@@ -1,6 +1,8 @@
 #ifndef ASSEMBLER_EXCEPTIONS_H
 #define ASSEMBLER_EXCEPTIONS_H
 
+#include "pch.h"
+
 // This file contains ways for showing elaborate exceptions and its trace in order to provide with
 // better and more workable exceptions for assembler
 
