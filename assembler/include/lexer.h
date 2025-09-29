@@ -94,14 +94,14 @@
 #define INF_KWD_MAKE_SPCE(s) ((s << 28) & INF_KWD_MASK_SPCE)
 
 // TODO: implement proper supposrt for table referncing, maybe repurpose RAX, RBX, RCX
-extern const char* LiteralFrntTable[];
-extern const char* LiteralBackTable[];
+extern const char LiteralFrntTable[];
+extern const char LiteralBackTable[];
 extern char* (*LiteralCollectors[])(FILE*);
 extern bool  (*LiteralValidators[])(FILE*);
 
 // following is part defining all the token types that are allowed as per our implementation of assembler.
 // all tokens must belong to one of the classification and must satisfy all defined parameters explicitly.
-enum Tokens {
+enum TokenTypes {
 
 #pragma region PUNCTUATIONS
 	TOKEN(TOKEN_COMMA   , CLF_PUN, (INF_PUN_MAKE_SIZE(1) | INF_PUN_MAKE_CONT(RSA) | INF_PUN_MAKE_IMPR(1)), RSA_MAKE(','), RSB_MAKE(0), RSC_MAKE(0)),
