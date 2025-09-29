@@ -1,5 +1,8 @@
 #include "lexer.h"
 
+// TODO: fix this for 0b and 0x, maybe introduce a manner to
+// TODO: handle numeric value, it always starts a numeric (assuming)
+
 const char LiteralFrntTable[] = {
 	'"' ,	// string literal starting with ' symbol
 	'#' ,	// decimal representation of number
