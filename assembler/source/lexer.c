@@ -48,8 +48,7 @@ bool (*LiteralValidators[])(FILE*) = {
 	literal_comment_validator,
 };
 
-
-char* __generic_collector(enum TokenTypes tt, FILE* fd)
+bool __generic_validator(enum TokenType tt, FILE* fd)
 {
 	unsigned int __begin = ftell(fd);
 	unsigned int __found = 0;
@@ -57,12 +56,34 @@ char* __generic_collector(enum TokenTypes tt, FILE* fd)
 	char collected;
 	char* frnt_word = INF_LIT_READ_FRNT(tt)
 		? LiteralFrntTable[RSA_READ(tt)] : " ";
-	char* stop_word = INF_LIT_READ_BACK(tt) 
+
+	unsigned int __length = strlen(frnt_word);
+	while ((__found < __length) && (collected = fgetc(fd)) != EOF) {
+		if (collected != frnt_word[__found])
+			return false;
+		__found++;
+	}
+
+	bool result = __length == __found;
+	if (!result)
+		fseek(fd, __begin, SEEK_SET);
+	return result;
+}
+
+
+char* __generic_collector(enum TokenTypes tt, FILE* fd)
+{
+	unsigned int __begin = ftell(fd);
+	unsigned int __found = 0;
+
+	char collected;
+	char* stop_word = INF_LIT_READ_BACK(tt)
 		? LiteralBackTable[RSB_READ(tt)] : EOF;
 
-	// TODO: use generic validator to validate frnt
+	if (!__generic_validator(tt, fd))
+		return NULL;
 
-	while ((collected = fgetchar(fd)) != EOF) {
+	while ((collected = fgetc(fd)) != EOF) {
 		if (collected == stop_word[0])
 			break;
 		__found++;
@@ -78,4 +99,43 @@ char* __generic_collector(enum TokenTypes tt, FILE* fd)
 	return __copied;
 }
 
-bool __generic_validator(enum TokenType tt, FILE* fd);
+char* literal_strings_collector(FILE* fd) {
+	return __generic_collector(TOKEN_STRING, fd);
+}
+
+char* literal_decnums_collector(FILE* fd) {
+
+}
+
+char* literal_binnums_collector(FILE* fd) {
+
+}
+
+char* literal_hexnums_collector(FILE* fd) {
+
+}
+
+char* literal_comment_collector(FILE* fd) {
+	return __generic_collector(TOKEN_STRING, fd);
+}
+
+
+bool  literal_strings_validator(FILE* fd) {
+	return __generic_validator(TOKEN_STRING, fd);
+}
+
+bool  literal_decnums_validator(FILE* fd) {
+	return __generic_validator(TOKEN_DECNUM, fd);
+}
+
+bool  literal_binnums_validator(FILE* fd) {
+	return __generic_validator(TOKEN_BINNUM, fd);
+}
+
+bool  literal_hexnums_validator(FILE* fd) {
+	return __generic_validator(TOKEN_HEXNUM, fd);
+}
+
+bool  literal_comment_validator(FILE* fd) {
+	return __generic_validator(TOKEN_COMMENT, fd);
+}
