@@ -31,6 +31,7 @@ file(GLOB ASSEMBLER_FILES "${ASSEMBLER_SRC_DIR}/*.c" "${ASSEMBLER_INC_DIR}/*.h")
 
 add_executable(ASSEMBLER ${ASSEMBLER_FILES})
 target_include_directories(ASSEMBLER PRIVATE ${ASSEMBLER_INC_DIR})
+target_precompile_headers(ASSEMBLER PRIVATE "${ASSEMBLER_INC_DIR}/pch.h")
 
 # SETUP SIMULATOR `C` TO RUN AND WATCH RISC V BYTE CODE
 set(SIMULATOR_SRC_DIR "${CMAKE_SOURCE_DIR}/simulator/source"    )
@@ -47,3 +48,10 @@ file(GLOB DEBUGGER_FILES "${DEBUGGER_SRC_DIR}/*.c" "${DEBUGGER_INC_DIR}/*.h")
 
 add_executable(DEBUGGER ${DEBUGGER_FILES})
 target_include_directories(DEBUGGER PRIVATE ${DEBUGGER_INC_DIR})
+
+# For predefined targets
+foreach(predef_target ALL_BUILD ZERO_CHECK INSTALL PACKAGE RUN_TESTS)
+    if(TARGET ${predef_target})
+        set_target_properties(${predef_target} PROPERTIES FOLDER "CMake Predefined Targets")
+    endif()
+endforeach()
