@@ -48,7 +48,7 @@ bool (*LiteralValidators[])(FILE*) = {
 	literal_comment_validator,
 };
 
-bool __generic_validator(enum TokenType tt, FILE* fd)
+bool __generic_validator(enum TokenTypes tt, FILE* fd)
 {
 	unsigned int __begin = ftell(fd);
 	unsigned int __found = 0;
