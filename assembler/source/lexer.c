@@ -3,21 +3,21 @@
 // TODO: fix this for 0b and 0x, maybe introduce a manner to
 // TODO: handle numeric value, it always starts a numeric (assuming)
 
-const char LiteralFrntTable[] = {
-	'"' ,	// string literal starting with ' symbol
-	'#' ,	// decimal representation of number
-	'0b',	// binary representation of the number
-	'0x',	// hexadecimal representation of the number
-	';;',	// comment start symbol, consumes line
+const char* LiteralFrntTable[] = {
+	"\"",	// string literal starting with " symbol
+	""  ,	// decimal representation of number
+	"0b",	// binary representation of the number
+	"0x",	// hexadecimal representation of the number
+	"#" ,	// comment start symbol, consumes line
 };
 
 
-const char LiteralBackTable[] = {
-	'"' ,	// ending of string literal ends with '
-	' ' ,	// numeric terminator
-	' ' ,	// numeric terminator
-	' ' ,	// numeric terminator
-	'\n',	// comment is supposed to terminate on new line
+const char* LiteralBackTable[] = {
+	"\"",	// ending of string literal ends with "
+	" " ,	// numeric terminator
+	" " ,	// numeric terminator
+	" " ,	// numeric terminator
+	"\n",	// comment is supposed to terminate on new line
 };
 
 char* literal_strings_collector(FILE* fd);
@@ -49,25 +49,33 @@ bool (*LiteralValidators[])(FILE*) = {
 };
 
 
-char* __generic_collector(FILE* fd){
+char* __generic_collector(enum TokenTypes tt, FILE* fd)
+{
 	unsigned int __begin = ftell(fd);
 	unsigned int __found = 0;
 
 	char collected;
-	char stop_word = INF_LIT_READ_BACK(TOKEN_STRING) 
-		? LiteralBackTable[RSB_READ(TOKEN_STRING)] : EOF;
+	char* frnt_word = INF_LIT_READ_FRNT(tt)
+		? LiteralFrntTable[RSA_READ(tt)] : " ";
+	char* stop_word = INF_LIT_READ_BACK(tt) 
+		? LiteralBackTable[RSB_READ(tt)] : EOF;
+
+	// TODO: use generic validator to validate frnt
 
 	while ((collected = fgetchar(fd)) != EOF) {
-		if (collected == stop_word)
+		if (collected == stop_word[0])
 			break;
 		__found++;
 	}
 
 	if (collected == EOF)
-		return NULL;	// throw trace that current collection has ended due to EOF
+		return NULL;
 
 	char* __copied = (char*)malloc(__found);
-	fseek(fd, __begin, SEEK_SET);
+	fseek(fd, __begin + 1, SEEK_SET);
 	fread(__copied, sizeof(char), __found, fd);
+	fseek(fd, __begin + __found + 1, SEEK_SET);
 	return __copied;
 }
+
+bool __generic_validator(enum TokenType tt, FILE* fd);

@@ -2,6 +2,7 @@
 #define ASSEMBLER_LEXER_H
 
 #include "pch.h"
+#include "exceptions.h"
 
 // defining type classifications for lexemes, each lexeme is to collect its data and be reurned with its properties
 // and rules that it must satisfy in order to be considered as tokenizable.
@@ -94,8 +95,8 @@
 #define INF_KWD_MAKE_SPCE(s) ((s << 28) & INF_KWD_MASK_SPCE)
 
 // TODO: implement proper supposrt for table referncing, maybe repurpose RAX, RBX, RCX
-extern const char LiteralFrntTable[];
-extern const char LiteralBackTable[];
+extern const char* LiteralFrntTable[];
+extern const char* LiteralBackTable[];
 extern char* (*LiteralCollectors[])(FILE*);
 extern bool  (*LiteralValidators[])(FILE*);
 

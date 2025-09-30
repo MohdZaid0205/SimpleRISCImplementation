@@ -34,10 +34,10 @@ specifically these are formatted as follows
 <description> expected `,` but got `.`, perhaps you meant a `,`. 
 */
 typedef struct {
-	const char* msg;		// message related to trace.
-	const char* ctx;		// associated context for trace.
-	const char* des;		// descritption about trace.
-	const char* com;		// comments made on trace.
+	char* msg;				// message related to trace.
+	char* ctx;				// associated context for trace.
+	char* des;				// descritption about trace.
+	char* com;				// comments made on trace.
 	void* _metadata;		// metadata for current trace
 } Trace;
 
@@ -63,7 +63,7 @@ Trace* __create_formatted_trace(
 	const char* msg, const char* ctx, const char* des, const char* com
 );
 
-Trace*__create_highlight_trace(
+Trace* __create_highlight_trace(
 	const char* msg, const char* ctx, const char* des, const char* com,
 	const char* m_w, const char* x_w, const char* d_w, const char* c_w
 );
