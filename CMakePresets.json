@@ -1,22 +1,65 @@
 {
-    "version": 3,
+  "version": 3,
 
     "configurePresets": [
-        {
-            "name": "windows-debug",
-            "displayName": "Win Debug",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/${presetName}",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE":"Debug"
-            }
+      {
+        "name": "windows-debug",
+        "displayName": "WIN Debug",
+        "generator": "Ninja",
+        "binaryDir": "${sourceDir}/out/build/${presetName}",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Debug"
         }
+      },
+      {
+        "name": "windows-release",
+        "displayName": "WIN Release",
+        "generator": "Ninja",
+        "binaryDir": "${sourceDir}/out/build/${presetName}",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release"
+        }
+      },
+      {
+        "name": "ubuntu-debug",
+        "displayName": "WSL Debug",
+        "generator": "Ninja",
+        "binaryDir": "${sourceDir}/out/build/${presetName}",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Debug",
+          "CMAKE_C_COMPILER": "clang"
+        },
+        "remoteMachine": "WSL"
+      },
+      {
+        "name": "ubuntu-release",
+        "displayName": "WSL Release",
+        "generator": "Ninja",
+        "binaryDir": "${sourceDir}/out/build/${presetName}",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "CMAKE_C_COMPILER": "clang"
+        },
+        "remoteMachine": "WSL"
+      }
     ],
 
-    "buildPresets": [
-        {
-            "name": "windows-debug-build",
-            "configurePreset": "windows-debug"
-        }
-    ]
+  "buildPresets": [
+    {
+      "name": "windows-debug-build",
+      "configurePreset": "windows-debug"
+    },
+    {
+      "name": "windows-release-build",
+      "configurePreset": "windows-release"
+    },
+    {
+      "name": "ubuntu-debug-build",
+      "configurePreset": "ubuntu-debug"
+    },
+    {
+      "name": "ubuntu-release-build",
+      "configurePreset": "ubuntu-release"
+    }
+  ]
 }
