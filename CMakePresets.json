@@ -23,24 +23,22 @@
       {
         "name": "ubuntu-debug",
         "displayName": "WSL Debug",
-        "generator": "Ninja",
+        "generator": "Unix Makefiles",
         "binaryDir": "${sourceDir}/out/build/${presetName}",
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Debug",
           "CMAKE_C_COMPILER": "clang"
-        },
-        "remoteMachine": "WSL"
+        }
       },
       {
         "name": "ubuntu-release",
         "displayName": "WSL Release",
-        "generator": "Ninja",
+        "generator": "Unix Makefiles",
         "binaryDir": "${sourceDir}/out/build/${presetName}",
         "cacheVariables": {
           "CMAKE_BUILD_TYPE": "Release",
           "CMAKE_C_COMPILER": "clang"
-        },
-        "remoteMachine": "WSL"
+        }
       }
     ],
 
