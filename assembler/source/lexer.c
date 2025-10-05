@@ -75,6 +75,18 @@ bool (*LiteralValidators[])(FILE*) = {
 #define INIT_FRNTWORD(tt) INF_LIT_READ_FRNT(tt) ? LiteralFrntTable[RSA_READ(tt)] : EOF
 #define INIT_BACKWORD(tt) INF_LIT_READ_BACK(tt) ? LiteralBackTable[RSB_READ(tt)] : EOF
 
+bool __iter_util(char* word, FILE* fd) {
+	int __word_roll = ftell(fd);
+	int __word_size = strlen(word);
+	for (int i = 0; i < __word_size; i++){
+		if (fgetc(fd) != word[i]) {
+			fseek(fd, __word_roll, SEEK_SET);
+			return false;
+		}
+	}
+	return true;
+}
+
 char* __generic_collector(enum TokenTypes tt, FILE* fd, bool (*res)(char), bool (*all)(char))
 {
 	unsigned int __begin = ftell(fd);
@@ -85,12 +97,16 @@ char* __generic_collector(enum TokenTypes tt, FILE* fd, bool (*res)(char), bool 
 	char* back_word = INIT_BACKWORD(tt);
 
 	//TODO: iterate thru frnt of the literal.
+	if (!__iter_util(frnt_word, fd))
+		return NULL;
 
 	while ((collected = fgetc(fd) != EOF))
 	{
 		if (all(collected))
 			__found++;
 		if (res(collected))
+			break;
+		if (__iter_util(back_word, fd))
 			break;
 	}
 
