@@ -1,14 +1,11 @@
 #include "lexer.h"
 
-//IMPORTANT: [>_] -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=+
-// * All following tables and definitions attached must be in pre-		|
-// * defined order as indexed in @TokenTypes <TOKEN_XX>.				|
-// * if altered with, this implementation will not work properly.		|
-// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-+
+// TODO: fix this for 0b and 0x, maybe introduce a manner to
+// TODO: handle numeric value, it always starts a numeric (assuming)
 
 const char* LiteralFrntTable[] = {
 	"\"",	// string literal starting with " symbol
-	" " ,	// decimal representation of number
+	""  ,	// decimal representation of number
 	"0b",	// binary representation of the number
 	"0x",	// hexadecimal representation of the number
 	"#" ,	// comment start symbol, consumes line
@@ -22,21 +19,11 @@ const char* LiteralBackTable[] = {
 	"\n",	// comment is supposed to terminate on new line
 };
 
-//IDEA: [>_] -----------------------------------------------------------+
-// * Literal collector must be defined for all types of literals.		|
-// * Note that collector will start from its `frnt` value included and	|
-// * it must exit with its `back` value excluded, it is assumed	that	|
-// * literal does contain its `frnt` and `back` as result.				|
-// ---------------------------------------------------------------------+
-
-//NOTE: add more collectors implementations here, preferably.
 char* literal_strings_collector(FILE* fd);
 char* literal_decnums_collector(FILE* fd);
 char* literal_binnums_collector(FILE* fd);
 char* literal_hexnums_collector(FILE* fd);
 char* literal_comment_collector(FILE* fd);
-//NOTE: include all validator implementations in order below.
-//IMPORTANT: in `LiteralCollectors` inclusion must be orderd.
 
 char* (*LiteralCollectors[])(FILE*) = {
 	literal_strings_collector,
@@ -46,22 +33,11 @@ char* (*LiteralCollectors[])(FILE*) = {
 	literal_comment_collector,
 };
 
-//IDEA: [>_] -----------------------------------------------------------+
-// * Literal Validator is used to Validate all the parts that is		|
-// * present within previously collected literal, this may also be		|
-// * used for checking if collection is properly reasoned with.			|
-// ---------------------------------------------------------------------+
-
-
-//NOTE: add more validator implementations here, preferably.
 bool  literal_strings_validator(FILE* fd);
 bool  literal_decnums_validator(FILE* fd);
 bool  literal_binnums_validator(FILE* fd);
 bool  literal_hexnums_validator(FILE* fd);
 bool  literal_comment_validator(FILE* fd);
-
-//NOTE: include all validator implementations in order below.
-//IMPORTANT: in `LiteralValidators` inclusion must be orderd.
 
 bool (*LiteralValidators[])(FILE*) = {
 	literal_strings_validator,
@@ -71,44 +47,94 @@ bool (*LiteralValidators[])(FILE*) = {
 	literal_comment_validator,
 };
 
-// Following is implementation for each of collectors and validators.
-#define INIT_FRNTWORD(tt) INF_LIT_READ_FRNT(tt) ? LiteralFrntTable[RSA_READ(tt)] : EOF
-#define INIT_BACKWORD(tt) INF_LIT_READ_BACK(tt) ? LiteralBackTable[RSB_READ(tt)] : EOF
-
-bool __iter_util(char* word, FILE* fd) {
-	int __word_roll = ftell(fd);
-	int __word_size = strlen(word);
-	for (int i = 0; i < __word_size; i++){
-		if (fgetc(fd) != word[i]) {
-			fseek(fd, __word_roll, SEEK_SET);
-			return false;
-		}
-	}
-	return true;
-}
-
-char* __generic_collector(enum TokenTypes tt, FILE* fd, bool (*res)(char), bool (*all)(char))
+bool __generic_validator(enum TokenTypes tt, FILE* fd)
 {
 	unsigned int __begin = ftell(fd);
 	unsigned int __found = 0;
 
 	char collected;
-	char* frnt_word = INIT_FRNTWORD(tt);
-	char* back_word = INIT_BACKWORD(tt);
+	char* frnt_word = INF_LIT_READ_FRNT(tt)
+		? LiteralFrntTable[RSA_READ(tt)] : " ";
 
-	//TODO: iterate thru frnt of the literal.
-	if (!__iter_util(frnt_word, fd))
-		return NULL;
-
-	while ((collected = fgetc(fd) != EOF))
-	{
-		if (all(collected))
-			__found++;
-		if (res(collected))
-			break;
-		if (__iter_util(back_word, fd))
-			break;
+	unsigned int __length = strlen(frnt_word);
+	while ((__found < __length) && (collected = fgetc(fd)) != EOF) {
+		if (collected != frnt_word[__found])
+			return false;
+		__found++;
 	}
 
-	//TODO: iterate thru back of the literal.
+	bool result = __length == __found;
+	if (!result)
+		fseek(fd, __begin, SEEK_SET);
+	return result;
+}
+
+
+char* __generic_collector(enum TokenTypes tt, FILE* fd)
+{
+	unsigned int __begin = ftell(fd);
+	unsigned int __found = 0;
+
+	char collected;
+	char* stop_word = INF_LIT_READ_BACK(tt)
+		? LiteralBackTable[RSB_READ(tt)] : EOF;
+
+	if (!__generic_validator(tt, fd))
+		return NULL;
+
+	while ((collected = fgetc(fd)) != EOF) {
+		if (collected == stop_word[0])
+			break;
+		__found++;
+	}
+
+	if (collected == EOF)
+		return NULL;
+
+	char* __copied = (char*)malloc(__found);
+	fseek(fd, __begin + 1, SEEK_SET);
+	fread(__copied, sizeof(char), __found, fd);
+	fseek(fd, __begin + __found + 1, SEEK_SET);
+	return __copied;
+}
+
+char* literal_strings_collector(FILE* fd) {
+	return __generic_collector(TOKEN_STRING, fd);
+}
+
+char* literal_decnums_collector(FILE* fd) {
+
+}
+
+char* literal_binnums_collector(FILE* fd) {
+
+}
+
+char* literal_hexnums_collector(FILE* fd) {
+
+}
+
+char* literal_comment_collector(FILE* fd) {
+	return __generic_collector(TOKEN_STRING, fd);
+}
+
+
+bool  literal_strings_validator(FILE* fd) {
+	return __generic_validator(TOKEN_STRING, fd);
+}
+
+bool  literal_decnums_validator(FILE* fd) {
+	return __generic_validator(TOKEN_DECNUM, fd);
+}
+
+bool  literal_binnums_validator(FILE* fd) {
+	return __generic_validator(TOKEN_BINNUM, fd);
+}
+
+bool  literal_hexnums_validator(FILE* fd) {
+	return __generic_validator(TOKEN_HEXNUM, fd);
+}
+
+bool  literal_comment_validator(FILE* fd) {
+	return __generic_validator(TOKEN_COMMENT, fd);
 }
