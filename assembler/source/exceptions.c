@@ -32,6 +32,7 @@ Trace* __create_formatted_trace(
 	__trace->ctx = ctx;
 	__trace->des = des;
 	__trace->com = com;
+	__trace->_metadata = NULL;
 	return __trace;
 }
 
@@ -95,15 +96,22 @@ void __print_annotated_trace(Trace* __trace)
 {}
 
 void __remove_formatted_trace(Trace * __trace){
-	free(__trace);
+	if (__trace->_metadata)
+		free(__trace->_metadata);
+	if (__trace)
+		free(__trace);
 }
 
 void __remove_highlight_trace(Trace * __trace){
-	free(__trace->_metadata);
-	free(__trace);
+	if (__trace->_metadata)
+		free(__trace->_metadata);
+	if (__trace)
+		free(__trace);
 }
 
 void __remove_annotated_trace(Trace * __trace){
-	free(__trace->_metadata);
-	free(__trace);
+	if (__trace->_metadata)
+		free(__trace->_metadata);
+	if (__trace)
+		free(__trace);
 }

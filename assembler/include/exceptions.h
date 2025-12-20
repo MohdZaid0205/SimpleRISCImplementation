@@ -85,4 +85,19 @@ void __remove_formatted_trace(Trace* __trace);
 void __remove_highlight_trace(Trace* __trace);
 void __remove_annotated_trace(Trace* __trace);
 
+// state machine to work with and deal with exceptions and logging mechanism.
+extern Trace*			panic;	// state to store in case of exceptions or fatal occurred.
+extern enum TraceLevel  level;	// level of panic or message that is allowed to escape.		
+
+
+// to directly display required logging mechanism to screen and corresponding handlers.
+#define DEBUG(fun, args) __remove_##fun(panic); panic = NULL; panic = __create_##fun(args); \
+						if (level <= T_DEBUG) __print_##fun(panic); //  pass
+#define WARNS(fun, args) __remove_##fun(panic); panic = NULL; panic = __create_##fun(args); \
+						if (level <= T_WARNS) __print_##fun(panic); //  pass
+#define ERROR(fun, args) __remove_##fun(panic); panic = NULL; panic = __create_##fun(args); \
+						if (level <= T_ERROR) __print_##fun(panic); //  pass
+#define FATAL(fun, args) __remove_##fun(panic); panic = NULL; panic = __create_##fun(args); \
+						if (level <= T_FATAL) __print_##fun(panic); exit(-1)
+
 #endif

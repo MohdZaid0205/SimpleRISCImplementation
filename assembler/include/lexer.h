@@ -67,19 +67,23 @@
 #define INF_OPR_MAKE_CONT(c) ((c << 28) & INF_OPR_MASK_CONT)
 
 // Literals
-// 0b10FB_0000_         [BBBB_BBBB]
-//     ^^     [AAAA_AAAA]         [CCCC_CCCC]
-//     ||     A and B contains index to symbols F and B repectively
-//     ||     C holds array index of literal handler in literal function table.
-//     |+ --> if back symbol is present.
-//     + ---> if front symbol is present.
-#define INF_LIT_MASK      0b00110000000000000000000000000000
+// 0b10FB_X000_         [BBBB_BBBB]
+//     ^^ ^   [AAAA_AAAA]         [CCCC_CCCC]
+//     || |   A and B contains index to symbols F and B repectively
+//	   || |   C holds array index of literal handler in literal function table.
+//     || +-> if function for validation is present. stored in C  
+//     |+---> if back symbol is present. stored in A
+//     +----> if front symbol is present. stored in B
+#define INF_LIT_MASK      0b00111000000000000000000000000000
 #define INF_LIT_MASK_FRNT 0b00100000000000000000000000000000
 #define INF_LIT_MASK_BACK 0b00010000000000000000000000000000
+#define INF_LIT_MASK_FUNC 0b00001000000000000000000000000000
 #define INF_LIT_READ_FRNT(s) ((INF_LIT_MASK_FRNT & s) >> 29)
 #define INF_LIT_MAKE_FRNT(s) ((s << 29) & INF_LIT_MASK_FRNT)
 #define INF_LIT_READ_BACK(s) ((INF_LIT_MASK_BACK & s) >> 28)
 #define INF_LIT_MAKE_BACK(s) ((s << 28) & INF_LIT_MASK_BACK)
+#define INF_LIT_READ_FUNC(s) ((INF_LIT_MASK_FUNC & s) >> 27)
+#define INF_LIT_MAKE_FUNC(s) ((s << 27) & INF_LIT_MASK_FUNC)
 
 // Keywords
 // 0b11CS_0000_[AAAA_AAAA_BBBB_BBBB_CCCC_CCCC]
@@ -94,11 +98,13 @@
 #define INF_KWD_READ_SPCE(s) ((INF_KWD_MASK_SPCE & s) >> 28)
 #define INF_KWD_MAKE_SPCE(s) ((s << 28) & INF_KWD_MASK_SPCE)
 
-// TODO: implement proper supposrt for table referncing, maybe repurpose RAX, RBX, RCX
+// implemented proper support for table referncing, maybe repurpose RSA, RSB, RSC
+// RSA, RSB and RSC now store index of starting caharchters and ending charachters
+// this applies only to CLF_LIT (literals) only
 extern const char* LiteralFrntTable[];
 extern const char* LiteralBackTable[];
 extern char* (*LiteralCollectors[])(FILE*);
-extern bool  (*LiteralValidators[])(FILE*);
+extern bool  (*LiteralValidators[])(char );
 
 // following is part defining all the token types that are allowed as per our implementation of assembler.
 // all tokens must belong to one of the classification and must satisfy all defined parameters explicitly.
