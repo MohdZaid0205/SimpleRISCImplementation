@@ -64,8 +64,8 @@ char* __generic_collector(enum TokenTypes tt, FILE* fd)
 	char* stop_word = INF_LIT_READ_BACK(tt)
 		? LiteralBackTable[RSB_READ(tt)] : EOF;
 
-	if (!__generic_validator(tt, fd))
-		return NULL;
+	//if (!__generic_validator(tt, fd))
+	//	return NULL;
 
 	while ((collected = fgetc(fd)) != EOF) {
 		if (collected == stop_word[0])
@@ -84,23 +84,23 @@ char* __generic_collector(enum TokenTypes tt, FILE* fd)
 }
 
 char* literal_strings_collector(FILE* fd) {
-
+	NOT_IMPLEMENTED_EXCEPTION;
 }
 
 char* literal_decnums_collector(FILE* fd) {
-
+	NOT_IMPLEMENTED_EXCEPTION;
 }
 
 char* literal_binnums_collector(FILE* fd) {
-
+	NOT_IMPLEMENTED_EXCEPTION;
 }
 
 char* literal_hexnums_collector(FILE* fd) {
-
+	NOT_IMPLEMENTED_EXCEPTION;
 }
 
 char* literal_comment_collector(FILE* fd) {
-
+	NOT_IMPLEMENTED_EXCEPTION;
 }
 
 

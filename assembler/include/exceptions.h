@@ -6,11 +6,18 @@
 // This file contains ways for showing elaborate exceptions and its trace in order to provide with
 // better and more workable exceptions for assembler
 
+// some string manipulation stuff
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
 // define colors and primary color_generator
 #define COLORED_FOREGROUND(r, g, b) "\033[38;2;"#r";"#g";"#b"m"
 #define COLORED_BACKGROUND(r, g, b) "\033[48;2;"#r";"#g";"#b"m"
 #define DEFAULT_FOREGROUND "\033[39m"
 #define DEFAULT_BACKGROUND "\033[49m"
+
+// define null paramaeter
+#define NOTEXT ""
 
 // trace to hold information and sequence of exceptions that led to critical.
 // trace is to be done at error or critical level by default.
@@ -86,18 +93,22 @@ void __remove_highlight_trace(Trace* __trace);
 void __remove_annotated_trace(Trace* __trace);
 
 // state machine to work with and deal with exceptions and logging mechanism.
-extern Trace*			panic;	// state to store in case of exceptions or fatal occurred.
-extern enum TraceLevel  level;	// level of panic or message that is allowed to escape.		
+extern Trace*			__e_trace;	// state to store in case of exceptions or fatal occurred.
+extern enum TraceLevel  __e_level;	// __e_level of __e_trace or message that is allowed to escape.		
+
 
 
 // to directly display required logging mechanism to screen and corresponding handlers.
-#define DEBUG(fun, args) __remove_##fun(panic); panic = NULL; panic = __create_##fun(args); \
-						if (level <= T_DEBUG) __print_##fun(panic); //  pass
-#define WARNS(fun, args) __remove_##fun(panic); panic = NULL; panic = __create_##fun(args); \
-						if (level <= T_WARNS) __print_##fun(panic); //  pass
-#define ERROR(fun, args) __remove_##fun(panic); panic = NULL; panic = __create_##fun(args); \
-						if (level <= T_ERROR) __print_##fun(panic); //  pass
-#define FATAL(fun, args) __remove_##fun(panic); panic = NULL; panic = __create_##fun(args); \
-						if (level <= T_FATAL) __print_##fun(panic); exit(-1)
+#define TODO_MES "Not Implemented Exception. Tried to execute line marked as TODO."
+#define TODO_CTX "inside: " __FILE__ ":" STR(__LINE__)
+#define TODO_DES 
+#define TODO_COM "Marked line requires implementation in order to execute at runtime."
+
+#define TODO(what)	__remove_highlight_trace(__e_trace); __e_trace = NULL;	__e_trace =			 \
+					__create_highlight_trace(TODO_MES, TODO_CTX, TODO_DES what, TODO_COM,		 \
+											"Not Implemented Exception", TODO_CTX, what, NOTEXT);\
+					__print_highlight_trace(__e_trace); exit(-1)
+
+#define NOT_IMPLEMENTED_EXCEPTION TODO(__func__)
 
 #endif

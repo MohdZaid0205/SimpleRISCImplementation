@@ -1,13 +1,23 @@
 #include "exceptions.h"
 
-#define COL_TRACE_PR(trace, meta, x, c, e, p)\
-		printf("%s%.*s%s", p, meta->x.str, trace->x, c);\
-		printf("%.*s", meta->x.end - meta->x.str, trace->x + meta->x.str);\
-		printf("%s%s\n", e, trace->x + meta->x.end)
+// helper definitions to deal with string coloring using ascii values
+#define COL_TRACE_PR(trace, meta, x, c, e, p) {\
+			printf("%s%.*s%s", p, meta->x.str, trace->x, c);\
+			printf("%.*s", meta->x.end - meta->x.str, trace->x + meta->x.str);\
+			printf("%s%s\n", e, trace->x + meta->x.end);\
+		}
+
+// global variables as requested per new macro definitons related to
+// DEBUG, ERROR, WARNS and FATAL
+Trace*			 __e_trace;		// store trace that has just been created
+enum TraceLevel  __e_level;		// store level of trace that is allowed to print
 
 
-
+// find string inside an string helper for matching a substring inside
 unsigned int __find_string_string(const char* pattern, const char* text){
+	if (pattern == NULL || text == NULL)
+		return 0;
+
 	int m = strlen(pattern), n = strlen(text);
 	if (m == 0) return 0;
 	if (m >  n) return 0;
@@ -78,40 +88,40 @@ Trace* __create_annotated_trace(
 }
 
 void __print_formatted_trace(Trace* __trace){
-	printf("%s\n", __trace->msg);
-	printf("\t\t%s\n", __trace->ctx);
-	printf("\t%s\n", __trace->com);
-	printf("\t%s\n", __trace->des);
+	if (__trace->msg) printf("%s\n", __trace->msg);
+	if (__trace->ctx) printf("\t%s\n", __trace->ctx);
+	if (__trace->com) printf("\t%s\n", __trace->com);
+	if (__trace->des) printf("%s\n", __trace->des);
 }
 
 void __print_highlight_trace(Trace* __trace){
 	struct _highlight_metadata* __meta = __trace->_metadata;
-	COL_TRACE_PR(__trace, __meta, msg, COLORED_FOREGROUND(255, 150, 150), DEFAULT_FOREGROUND, "\0\0");
-	COL_TRACE_PR(__trace, __meta, ctx, COLORED_FOREGROUND(255, 150, 150), DEFAULT_FOREGROUND, "\t\t");
-	COL_TRACE_PR(__trace, __meta, com, COLORED_FOREGROUND(255, 150, 150), DEFAULT_FOREGROUND, "\t\0");
-	COL_TRACE_PR(__trace, __meta, des, COLORED_FOREGROUND(255, 150, 150), DEFAULT_FOREGROUND, "\t\0");
+	if (__trace->msg) COL_TRACE_PR(__trace, __meta, msg, COLORED_FOREGROUND(255, 100, 100), DEFAULT_FOREGROUND, "\0\0");
+	if (__trace->ctx) COL_TRACE_PR(__trace, __meta, ctx, COLORED_FOREGROUND(100, 100, 255), DEFAULT_FOREGROUND, "\t\0");
+	if (__trace->com) COL_TRACE_PR(__trace, __meta, com, COLORED_FOREGROUND(100, 255, 100), DEFAULT_FOREGROUND, "\t\0");
+	if (__trace->des) COL_TRACE_PR(__trace, __meta, des, COLORED_FOREGROUND(255, 100, 100), DEFAULT_FOREGROUND, "\0\0");
 }
 
 void __print_annotated_trace(Trace* __trace)
 {}
 
 void __remove_formatted_trace(Trace * __trace){
+	if (!__trace) return;
 	if (__trace->_metadata)
 		free(__trace->_metadata);
-	if (__trace)
-		free(__trace);
+	free(__trace);
 }
 
 void __remove_highlight_trace(Trace * __trace){
+	if (!__trace) return;
 	if (__trace->_metadata)
 		free(__trace->_metadata);
-	if (__trace)
-		free(__trace);
+	free(__trace);
 }
 
 void __remove_annotated_trace(Trace * __trace){
+	if (!__trace) return;
 	if (__trace->_metadata)
 		free(__trace->_metadata);
-	if (__trace)
-		free(__trace);
+	free(__trace);
 }
