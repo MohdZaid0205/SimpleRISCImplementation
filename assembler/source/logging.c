@@ -27,7 +27,7 @@ const char* __get_associated_background_for(enum LOGGER_LEVEL_OPTION level) {
 
 int lfprintf(LogLevel level, FILE* stream, const char* format, ...) {
 
-    if (!(level & LOGGING_LEVEL)) return 0;
+    if ((level & LOGGING_LEVEL) != level) return 0;
 
     size_t final_len = 0;
     const char* ptr = format;

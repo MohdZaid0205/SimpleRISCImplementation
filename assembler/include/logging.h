@@ -28,13 +28,19 @@ typedef enum LOGGER_LEVEL_OPTION {
 // -----------------------------------------------------------------------------+
 
 #ifndef LOGGING_LEVEL
-	#ifdef DEBUG
-		#define LOGGING_LEVEL LEVEL_ALL
+	#if defined(NDEBUG)
+		#define LOGGING_LEVEL (LEVEL_WRN | LEVEL_ERR | LEVEL_FAT)
 	#else
-		#define LOGGING_LEVEL LEVEL_WRN | LEVEL_ERR | LEVEL_FAT
+		#define LOGGING_LEVEL (LEVEL_ALL)
 	#endif
 #endif
 
+// allow optimization for statements that are never executed at runtime exclusion
+#if defined(NDEBUG)
+	#define OPTIMIZATIONS(level) if (level & LOGGING_LEVEL)
+#else
+	#define OPTIMIZATIONS(level) if (true)
+#endif
 // [ INFO ] --------------------------------------------------------------------+
 // helper macro definitions for dealing with ANSI escape sequence for colors if	|
 // no color mode is selected. in order to disable this coloring mechanism pass	|
@@ -46,7 +52,7 @@ typedef enum LOGGER_LEVEL_OPTION {
 	#define COLORED_FOREGROUND(r, g, b) "\033[38;2;"#r";"#g";"#b"m"
 	#define COLORED_BACKGROUND(r, g, b) "\033[48;2;"#r";"#g";"#b"m"
 	#define DEFAULT_FOREGROUND "\033[39m"
-	#define DEFAULT_BACKGROUND "\033[49m"
+	#define DEFAULT_BACKGROUND "\033[49m" "\033[39m"
 #else
 	// define colors macros as empty so that no ansi is used at runtime
 	#define COLORED_FOREGROUND(r, g, b) ""
@@ -65,12 +71,12 @@ typedef enum LOGGER_LEVEL_OPTION {
 	#define LOGGER_COLOR_FAT_F COLORED_FOREGROUND(255, 127, 000)
 
 	// define all background colors that is to be used for corresponding level
-	#define LOGGER_COLOR_LOG_B COLORED_BACKGROUND(127, 127, 127)
-	#define LOGGER_COLOR_INF_B COLORED_BACKGROUND(127, 127, 255)
-	#define LOGGER_COLOR_DBG_B COLORED_BACKGROUND(127, 255, 127)
-	#define LOGGER_COLOR_WRN_B COLORED_BACKGROUND(255, 255, 127)
-	#define LOGGER_COLOR_ERR_B COLORED_BACKGROUND(255, 127, 127)
-	#define LOGGER_COLOR_FAT_B COLORED_BACKGROUND(255, 127, 000)
+	#define LOGGER_COLOR_LOG_B COLORED_BACKGROUND(127, 127, 127) COLORED_FOREGROUND(0,0,0)
+	#define LOGGER_COLOR_INF_B COLORED_BACKGROUND(127, 127, 255) COLORED_FOREGROUND(0,0,0)
+	#define LOGGER_COLOR_DBG_B COLORED_BACKGROUND(127, 255, 127) COLORED_FOREGROUND(0,0,0)
+	#define LOGGER_COLOR_WRN_B COLORED_BACKGROUND(255, 255, 127) COLORED_FOREGROUND(0,0,0)
+	#define LOGGER_COLOR_ERR_B COLORED_BACKGROUND(255, 127, 127) COLORED_FOREGROUND(0,0,0)
+	#define LOGGER_COLOR_FAT_B COLORED_BACKGROUND(255, 127, 000) COLORED_FOREGROUND(0,0,0)
 #else
 	#if !defined(LOGGER_COLOR_LOG_F)|| \
 		!defined(LOGGER_COLOR_INF_F)|| \
@@ -120,6 +126,16 @@ const char* __get_associated_foreground_for(enum LOGGER_LEVEL_OPTION level);
 // in order to get LEVEL_XXX's color as defined by default ot as defined by usr
 const char* __get_associated_background_for(enum LOGGER_LEVEL_OPTION level);
 
+// Option to select the stream to write into with respect to our FILE* stream
+// LOGGING_STREAM_GENERAL_INTO to specify where to stream general messages to
+// LOGGING_STREAM_EXCEPTION_INTO to specify where to stream error messages to
+#ifndef LOG_STREAM_GEN_INTO
+	#define LOG_STREAM_GEN_INTO stdout
+#endif
+#ifndef LOG_STREAM_EXC_INTO
+	#define LOG_STREAM_EXC_INTO stderr
+#endif
+
 // Underlying method to display onto selected stream based on log level that
 // has been selected at compile time in order to deal with size and instruction
 // limitations, this is supposed to work with output files as it writes to
@@ -134,5 +150,23 @@ const char* __get_associated_background_for(enum LOGGER_LEVEL_OPTION level);
 // NOTE: opening and closing stream is not job of this method, if user passes any 
 //		file as an input, they are required to make sure that it is open
 int lfprintf(LogLevel level, FILE* stream, const char* format, ...);
+
+// define macros required for main usage of logging and required application by
+// user to abstract away unnecessary implementation details, along with other macro
+// for ease of use and adding hinting options to all usages of those macros
+
+#define LEVEL_LOG_POST
+#define LEVEL_INF_POST
+#define LEVEL_DBG_POST
+#define LEVEL_WRN_POST
+#define LEVEL_ERR_POST
+#define LEVEL_FAT_POST exit(-1)
+
+#define LOG(...) OPTIMIZATIONS(LEVEL_LOG){lfprintf(LEVEL_LOG, LOG_STREAM_GEN_INTO, __VA_ARGS__);LEVEL_LOG_POST;}
+#define INF(...) OPTIMIZATIONS(LEVEL_INF){lfprintf(LEVEL_INF, LOG_STREAM_GEN_INTO, __VA_ARGS__);LEVEL_INF_POST;}
+#define DBG(...) OPTIMIZATIONS(LEVEL_DBG){lfprintf(LEVEL_DBG, LOG_STREAM_GEN_INTO, __VA_ARGS__);LEVEL_DBG_POST;}
+#define WRN(...) OPTIMIZATIONS(LEVEL_WRN){lfprintf(LEVEL_WRN, LOG_STREAM_GEN_INTO, __VA_ARGS__);LEVEL_WRN_POST;}
+#define ERR(...) OPTIMIZATIONS(LEVEL_ERR){lfprintf(LEVEL_ERR, LOG_STREAM_EXC_INTO, __VA_ARGS__);LEVEL_ERR_POST;}
+#define FAT(...) OPTIMIZATIONS(LEVEL_FAT){lfprintf(LEVEL_FAT, LOG_STREAM_EXC_INTO, __VA_ARGS__);LEVEL_FAT_POST;}
 
 #endif
