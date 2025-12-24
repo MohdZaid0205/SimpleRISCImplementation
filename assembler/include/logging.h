@@ -41,6 +41,7 @@ typedef enum LOGGER_LEVEL_OPTION {
 #else
 	#define OPTIMIZATIONS(level) if (true)
 #endif
+
 // [ INFO ] --------------------------------------------------------------------+
 // helper macro definitions for dealing with ANSI escape sequence for colors if	|
 // no color mode is selected. in order to disable this coloring mechanism pass	|
@@ -155,18 +156,32 @@ int lfprintf(LogLevel level, FILE* stream, const char* format, ...);
 // user to abstract away unnecessary implementation details, along with other macro
 // for ease of use and adding hinting options to all usages of those macros
 
-#define LEVEL_LOG_POST
-#define LEVEL_INF_POST
-#define LEVEL_DBG_POST
-#define LEVEL_WRN_POST
-#define LEVEL_ERR_POST
-#define LEVEL_FAT_POST exit(-1)
+#define LOG(...) OPTIMIZATIONS(LEVEL_LOG){lfprintf(LEVEL_LOG, LOG_STREAM_GEN_INTO, __VA_ARGS__);}
+#define INF(...) OPTIMIZATIONS(LEVEL_INF){lfprintf(LEVEL_INF, LOG_STREAM_GEN_INTO, __VA_ARGS__);}
+#define DBG(...) OPTIMIZATIONS(LEVEL_DBG){lfprintf(LEVEL_DBG, LOG_STREAM_GEN_INTO, __VA_ARGS__);}
+#define WRN(...) OPTIMIZATIONS(LEVEL_WRN){lfprintf(LEVEL_WRN, LOG_STREAM_GEN_INTO, __VA_ARGS__);}
+#define ERR(...) OPTIMIZATIONS(LEVEL_ERR){lfprintf(LEVEL_ERR, LOG_STREAM_EXC_INTO, __VA_ARGS__);}
+#define FAT(...) OPTIMIZATIONS(LEVEL_FAT){lfprintf(LEVEL_FAT, LOG_STREAM_EXC_INTO, __VA_ARGS__);}
 
-#define LOG(...) OPTIMIZATIONS(LEVEL_LOG){lfprintf(LEVEL_LOG, LOG_STREAM_GEN_INTO, __VA_ARGS__);LEVEL_LOG_POST;}
-#define INF(...) OPTIMIZATIONS(LEVEL_INF){lfprintf(LEVEL_INF, LOG_STREAM_GEN_INTO, __VA_ARGS__);LEVEL_INF_POST;}
-#define DBG(...) OPTIMIZATIONS(LEVEL_DBG){lfprintf(LEVEL_DBG, LOG_STREAM_GEN_INTO, __VA_ARGS__);LEVEL_DBG_POST;}
-#define WRN(...) OPTIMIZATIONS(LEVEL_WRN){lfprintf(LEVEL_WRN, LOG_STREAM_GEN_INTO, __VA_ARGS__);LEVEL_WRN_POST;}
-#define ERR(...) OPTIMIZATIONS(LEVEL_ERR){lfprintf(LEVEL_ERR, LOG_STREAM_EXC_INTO, __VA_ARGS__);LEVEL_ERR_POST;}
-#define FAT(...) OPTIMIZATIONS(LEVEL_FAT){lfprintf(LEVEL_FAT, LOG_STREAM_EXC_INTO, __VA_ARGS__);LEVEL_FAT_POST;}
+#define LOG_IF(condition, ...) if (condition) { LOG(__VA_ARGS__) }
+#define INF_IF(condition, ...) if (condition) { INF(__VA_ARGS__) }
+#define DBG_IF(condition, ...) if (condition) { DBG(__VA_ARGS__) }
+#define WRN_IF(condition, ...) if (condition) { WRN(__VA_ARGS__) }
+#define ERR_IF(condition, ...) if (condition) { ERR(__VA_ARGS__) }
+#define FAT_IF(condition, ...) if (condition) { FAT(__VA_ARGS__) }
+
+// helper lines to put through code in order to display required behaviour without
+// explicitly calling methods each time it is required of you to display something
+
+#define LOGGING (...)	LOG("%(logging%): "	);	LOG(__VA_ARGS__);
+#define INFO(...)		INF("%(Info%): "	);	INF(__VA_ARGS__);
+#define DEBUG(...)		DBG("%(Debug%): "	);	DBG(__VA_ARGS__);
+#define WARNING(...)	WRN("%(Warning%): "	);	WRN(__VA_ARGS__);
+#define ERROR(...)		ERR("%(Error%): "	);	ERR(__VA_ARGS__);
+#define FATAL(...)		FAT("%(Fatal%): "	);	FAT(__VA_ARGS__);
+
+// notion of logging groups and associated notion of EXCEPTIONS as a group of logs
+#define EXCEPTION(what, body, ... ) {ERR("%(Exception%): "); ERR(what, __VA_ARGS__); body}
+#define ASSERTION(what, pass, fail) {if (what) {pass} else {fail}
 
 #endif

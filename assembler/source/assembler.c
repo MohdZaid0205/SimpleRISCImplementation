@@ -1,6 +1,5 @@
 #include "assembler.h"
 
-
 int main(int argc, char** argv){
-    NOT_IMPLEMENTED_EXCEPTION;
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }

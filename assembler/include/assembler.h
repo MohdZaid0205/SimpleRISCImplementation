@@ -3,5 +3,6 @@
 
 #include "exceptions.h"
 #include "lexer.h"
+#include "logging.h"
 
 #endif

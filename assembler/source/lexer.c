@@ -84,23 +84,23 @@ char* __generic_collector(enum TokenTypes tt, FILE* fd)
 }
 
 char* literal_strings_collector(FILE* fd) {
-	NOT_IMPLEMENTED_EXCEPTION;
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
 
 char* literal_decnums_collector(FILE* fd) {
-	NOT_IMPLEMENTED_EXCEPTION;
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
 
 char* literal_binnums_collector(FILE* fd) {
-	NOT_IMPLEMENTED_EXCEPTION;
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
 
 char* literal_hexnums_collector(FILE* fd) {
-	NOT_IMPLEMENTED_EXCEPTION;
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
 
 char* literal_comment_collector(FILE* fd) {
-	NOT_IMPLEMENTED_EXCEPTION;
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
 
 
@@ -109,17 +109,17 @@ bool  literal_strings_validator(char ch) {
 }
 
 bool  literal_decnums_validator(char ch) {
-
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
 
 bool  literal_binnums_validator(char ch) {
-
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
 
 bool  literal_hexnums_validator(char ch) {
-
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
 
 bool  literal_comment_validator(char ch) {
-
+	FUNCTION_NOT_IMPLEMENTED_EXCEPTION();
 }
