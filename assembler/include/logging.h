@@ -71,6 +71,45 @@ typedef enum LOGGER_LEVEL_OPTION {
 	#define LOGGER_COLOR_WRN_B COLORED_BACKGROUND(255, 255, 127)
 	#define LOGGER_COLOR_ERR_B COLORED_BACKGROUND(255, 127, 127)
 	#define LOGGER_COLOR_FAT_B COLORED_BACKGROUND(255, 127, 000)
+#else
+	#if !defined(LOGGER_COLOR_LOG_F)|| \
+		!defined(LOGGER_COLOR_INF_F)|| \
+		!defined(LOGGER_COLOR_DBG_F)|| \
+		!defined(LOGGER_COLOR_WRN_F)|| \
+		!defined(LOGGER_COLOR_ERR_F)|| \
+		!defined(LOGGER_COLOR_FAT_F)|| \
+		!defined(LOGGER_COLOR_LOG_B)|| \
+		!defined(LOGGER_COLOR_INF_B)|| \
+		!defined(LOGGER_COLOR_DBG_B)|| \
+		!defined(LOGGER_COLOR_WRN_B)|| \
+		!defined(LOGGER_COLOR_ERR_B)|| \
+		!defined(LOGGER_COLOR_FAT_B) 
+		
+		// do not remove line below under any condition, if you are accedentally
+		// triggering this error at compile time please add the following code
+		// before include this "logging.h" in your project.
+	
+		// [ CODE ]-------------------------------------------------------------+
+		// #define LOGGER_COLOR_LOG_F "COLOR"									|
+		// #define LOGGER_COLOR_INF_F "COLOR"									|
+		// #define LOGGER_COLOR_DBG_F "COLOR"									|
+		// #define LOGGER_COLOR_WRN_F "COLOR"									|
+		// #define LOGGER_COLOR_ERR_F "COLOR"									|
+		// #define LOGGER_COLOR_FAT_F "COLOR"									|
+		// #define LOGGER_COLOR_LOG_B "COLOR"									|
+		// #define LOGGER_COLOR_INF_B "COLOR"									|
+		// #define LOGGER_COLOR_DBG_B "COLOR"									|
+		// #define LOGGER_COLOR_WRN_B "COLOR"									|
+		// #define LOGGER_COLOR_ERR_B "COLOR"									|
+		// #define LOGGER_COLOR_FAT_B "COLOR"									|
+		// ---------------------------------------------------------------------+
+
+		// feel free to provide your own asscii escape sequence for these purpose
+		// if rather your intentions were to remove coloring please see compiler
+		// flag LOGGING_DISABLE_COLORING pass as -DLOGGING_DISABLE_COLORING
+
+		#error "Not all LOGGER_COLOR_XXX_T has been defined, see definitions"
+	#endif
 #endif
 
 // A helper method to get foreground color associated with LOGGER_LEVEL_OPTION
@@ -92,8 +131,8 @@ const char* __get_associated_background_for(enum LOGGER_LEVEL_OPTION level);
 //		- %( : start foreground highlight
 //		- %) : stops foreground highlight
 // 
-// NOTE: opening and closing stream is not job of this method, if user passes
-//       any file as an input, they are required to make sure that it is open
+// NOTE: opening and closing stream is not job of this method, if user passes any 
+//		file as an input, they are required to make sure that it is open
 int lfprintf(LogLevel level, FILE* stream, const char* format, ...);
 
 #endif
