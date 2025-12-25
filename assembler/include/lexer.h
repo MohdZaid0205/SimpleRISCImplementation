@@ -77,10 +77,11 @@ typedef struct LEXEME_OPERATION{
 // LITERALS_TYPE and later this sahll be used to determine default action based
 // on type itself
 typedef enum LEXEME_LITERAL_TYPE{
-    LITERAL_STRING,
-    LITERAL_COMMENT,
-    LITERAL_NUMERIC,
-    LITERAL_NONE,
+    LITERAL_ADDRESS,                    // [label] -> direct translation to addr
+    LITERAL_COMMENT,                    // ;; comments notion
+    LITERAL_NUMERIC,                    // 0xblahblah or maybe any number 123
+    LITERAL_STRING,                     // "this is a string, HELLO WORLD!"
+    LITERAL_NONE,                       // dont ask me why im writing this :-(
 } LexemeLitType, LexemeLiteralType;
 
 // LEXEME_LITERAL aka LexemeLit & LexemeLiteral
@@ -101,6 +102,7 @@ typedef enum LEXEME_LITERAL_TYPE{
 //      against keywords and if it is not a part of keyword then consider it to 
 //      a label
 typedef struct LEXEME_LITERAL{
+    LEXEME_LITERAL_TYPE type;           // type of literal that we hold
     unsigned int line_no;               // line number associated with this
     unsigned inr size_of;               // size of this lexeme in num bytes
     const char* data;                   // data to store (associated char*)
