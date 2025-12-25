@@ -139,9 +139,9 @@ typedef enum LEXEME_LITERAL_TYPE{
 //      against keywords and if it is not a part of keyword then consider it to 
 //      a label
 typedef struct LEXEME_LITERAL{
-    LEXEME_LITERAL_TYPE type;           // type of literal that we hold
+    enum LEXEME_LITERAL_TYPE type;       // type of literal that we hold
     unsigned int line_no;               // line number associated with this
-    unsigned inr size_of;               // size of this lexeme in num bytes
+    unsigned int size_of;               // size of this lexeme in num bytes
     const char* data;                   // data to store (associated char*)
 } LexemeLitType, LexemeLiteralType;
 
