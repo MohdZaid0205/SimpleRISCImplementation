@@ -33,4 +33,11 @@ typedef enum ASSEMBLER_LEXEME_TYPE {
 // *(this idea is subjected to change)											|
 // -----------------------------------------------------------------------------+
 
+// LEXEME_PNCTUATION is representation of any punctuataion
+typedef struct LEXEME_PUNCTUATION{
+    unsigned int line_no;
+    unsigned int char_no;
+    const char data;
+} LexemePun, LexemePunctuation;
+
 #endif
