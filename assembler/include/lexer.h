@@ -33,11 +33,43 @@ typedef enum ASSEMBLER_LEXEME_TYPE {
 // *(this idea is subjected to change)											|
 // -----------------------------------------------------------------------------+
 
-// LEXEME_PNCTUATION is representation of any punctuataion
+// LEXEME_PUNCTUATION aka LexemePun & LexemePunctuation
+// LEXEME_PUNCTUATION is representation of any punctuataion that is allowed inside
+// assembly grammar, see GRAMMAR.md for TERMINAL values and symbols, following is
+// a list of example punctuations that are found in example assembly files
+//
+// -----------------------------------------------------------------------------+
+// DOT   (.) -> sub-labels like `.label` or with predefined types `.data`       |
+// COMMA (,) -> seperators between arguments to instructions, `li a0, 0x01`     |
+// ...                                                                          |
+// -----------------------------------------------------------------------------+
 typedef struct LEXEME_PUNCTUATION{
-    unsigned int line_no;
-    unsigned int char_no;
-    const char data;
+    unsigned int line_no;               // line number within file OCCURANCE
+    unsigned int char_no;               // charcahter number within that LINE
+    const char data;                    // data to store (associated char).
 } LexemePun, LexemePunctuation;
+
+// LEXEME_OPERATION aka LexemeOpr & LexemeOperation
+// LEXEME_OPERATION is representation of operations that is allowed inside assem-
+// -bly, what do i call operation? anything arithmatic that has directly been put
+// in place inside assembly file, however this is to be used only when dealing
+// with addresses and constant expressions in general sense, following is a list
+// of example operations according to this project
+//
+// --------------+--------------------------------------------------------------+
+// ADD       (+) | for example we jump relative to label by `LABEL+0x08`        |
+// SUBTRACT  (-) |             we mutiply value with a value 0x08*0x0ff         |
+// MULTIPLY  (*) | it is however important to note that this is only to be used |
+// DIVIDE    (/) | at compile time, not at runtime [1]                          |
+// -----------------------------------------------------------------------------+
+//
+// [1]: using LABEL+value or value+value is not same as doing assembly operation
+//      as add LABEL, value or add value, value, rather it is to be considerd as 
+//      macro for making calculations easier
+typedef struct LEXEME_OPERATION{
+    unsigned int line_no;               // line number within file OCCURANCE
+    unsigned int char_no;               // charcahter number within that LINE
+    const char data;                    // data to store (associated symbol)
+} LexemeOpr, LexemeOperation;
 
 #endif
