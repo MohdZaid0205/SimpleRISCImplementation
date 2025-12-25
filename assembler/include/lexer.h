@@ -61,7 +61,7 @@ typedef struct LEXEME_PUNCTUATION{
 // SUBTRACT  (-) |             we mutiply value with a value 0x08*0x0ff         |
 // MULTIPLY  (*) | it is however important to note that this is only to be used |
 // DIVIDE    (/) | at compile time, not at runtime [1]                          |
-// -----------------------------------------------------------------------------+
+// --------------+--------------------------------------------------------------+
 //
 // [1]: using LABEL+value or value+value is not same as doing assembly operation
 //      as add LABEL, value or add value, value, rather it is to be considerd as 
@@ -71,5 +71,39 @@ typedef struct LEXEME_OPERATION{
     unsigned int char_no;               // charcahter number within that LINE
     const char data;                    // data to store (associated symbol)
 } LexemeOpr, LexemeOperation;
+
+// LEXEME_LITERAL_TYPE aka LexemeLitType & LexemeLiteralType
+// To represent type of literal that has been encountered in process of finding
+// LITERALS_TYPE and later this sahll be used to determine default action based
+// on type itself
+typedef enum LEXEME_LITERAL_TYPE{
+    LITERAL_STRING,
+    LITERAL_COMMENT,
+    LITERAL_NUMERIC,
+    LITERAL_NONE,
+} LexemeLitType, LexemeLiteralType;
+
+// LEXEME_LITERAL aka LexemeLit & LexemeLiteral
+// LEXEME_LITERAL is representation of literal types that has been defined within
+// assembly implementation, it is important to note that only some literals have
+// been defined, if none of literal type match then it is to be considerd as a 
+// a lebel, later this label is to be chaecked against keywords, if current lexem
+// -e matches to a keyword then in that case it cannot be a label.
+//
+// -----------------+-----------------------------------------------------------+
+// LITERAL_STRING   | "anything between double quotes is a string" or 's'ingle  |
+// LITERAL_COMMENT  | ;; anything appearing after ";" is a comment              |
+// LITERAL_NUMBER   | anything starting from NUMERIC char is a number           |
+// LITERAL_NONE     | if not matched to anything else it doesnt have type  [1]  |
+// -----------------+-----------------------------------------------------------+
+//
+// [1]: when dealing with any literal that is of NONE type you need to check it
+//      against keywords and if it is not a part of keyword then consider it to 
+//      a label
+typedef struct LEXEME_LITERAL{
+    unsigned int line_no;               // line number associated with this
+    unsigned inr size_of;               // size of this lexeme in num bytes
+    const char* data;                   // data to store (associated char*)
+} LexemeLitType, LexemeLiteralType;
 
 #endif
