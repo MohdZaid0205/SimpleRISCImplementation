@@ -40,35 +40,9 @@ typedef enum ASSEMBLER_LEXEME_TYPE {
 // *(this idea is subjected to change)											|
 // -----------------------------------------------------------------------------+
 
-struct LEXEME_PUNCTUATION;              // forward declaration of Structure
-struct LEXEME_OPERATION;                // forward declaration of Structure
-struct LEXEME_LITERAL;                  // forward declaration of Structure
-
-// LEXEME_TOKEN aka LexemeToken or Lexeme
-// LEXEME_TOKEN holds type of lexeme and associated information to that lexeme
-// 
-// [ USAGE ] -------------------------------------------------------------------+
-// LEXEME_TOKEN lexeme = __allocate;                                            |
-// switch (lexeme.type){                                                        |
-//      case LEXEME_PUN: return lexeme.as.pun;                                  |
-//      case LEXEME_OPR: return lexeme.as.opr;                                  |
-//      case LEXEME_LIT: return lexeme.as.lit;                                  |
-// }                                                                            |
-// -----------------------------------------------------------------------------+
-//
-// [ NOTE ] --------------------------------------------------------------------+
-// doing lexeme.as.<other> can fail with segmentation fault for lexeme.as.<type>|
-// -----------------------------------------------------------------------------+
-//
-// lexeme token for LEXEME_KEY has not been defined (look at CHANGE_LOG) above
-typedef struct LEXEME_TOKEN{
-    enum ASSEMBLER_LEXEME_TYPE type;    // holds the type of current lexeme
-    union {
-        struct LEXEME_PUNCTUATION pun;  // read lexeme as a punctuation
-        struct LEXEME_OPERATION   opr;  // read lexeme as a operation
-        struct LEXEME_LITERAL     lit;  // read lexeme as a literal
-    } as;
-} LexemeToken, Lexeme;
+// struct LEXEME_PUNCTUATION;              // forward declaration of Structure
+// struct LEXEME_OPERATION;                // forward declaration of Structure
+// struct LEXEME_LITERAL;                  // forward declaration of Structure
 
 // LEXEME_PUNCTUATION aka LexemePun & LexemePunctuation
 // LEXEME_PUNCTUATION is representation of any punctuataion that is allowed inside
@@ -143,6 +117,32 @@ typedef struct LEXEME_LITERAL{
     unsigned int line_no;               // line number associated with this
     unsigned int size_of;               // size of this lexeme in num bytes
     const char* data;                   // data to store (associated char*)
-} LexemeLitType, LexemeLiteralType;
+} LexemeLit, LexemeLiteral;
+
+// LEXEME_TOKEN aka LexemeToken or Lexeme
+// LEXEME_TOKEN holds type of lexeme and associated information to that lexeme
+// 
+// [ USAGE ] -------------------------------------------------------------------+
+// LEXEME_TOKEN lexeme = __allocate;                                            |
+// switch (lexeme.type){                                                        |
+//      case LEXEME_PUN: return lexeme.as.pun;                                  |
+//      case LEXEME_OPR: return lexeme.as.opr;                                  |
+//      case LEXEME_LIT: return lexeme.as.lit;                                  |
+// }                                                                            |
+// -----------------------------------------------------------------------------+
+//
+// [ NOTE ] --------------------------------------------------------------------+
+// doing lexeme.as.<other> can fail with segmentation fault for lexeme.as.<type>|
+// -----------------------------------------------------------------------------+
+//
+// lexeme token for LEXEME_KEY has not been defined (look at CHANGE_LOG) above
+typedef struct LEXEME_TOKEN{
+    enum ASSEMBLER_LEXEME_TYPE type;    // holds the type of current lexeme
+    union {
+        struct LEXEME_PUNCTUATION pun;  // read lexeme as a punctuation
+        struct LEXEME_OPERATION   opr;  // read lexeme as a operation
+        struct LEXEME_LITERAL     lit;  // read lexeme as a literal
+    } as;
+} LexemeToken, Lexeme;
 
 #endif
