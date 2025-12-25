@@ -173,7 +173,7 @@ int lfprintf(LogLevel level, FILE* stream, const char* format, ...);
 // helper lines to put through code in order to display required behaviour without
 // explicitly calling methods each time it is required of you to display something
 
-#define LOGGING (...)	LOG("%(logging%): "	);	LOG(__VA_ARGS__);
+#define LOGGING(...)	LOG("%(logging%): "	);	LOG(__VA_ARGS__);
 #define INFO(...)		INF("%(Info%): "	);	INF(__VA_ARGS__);
 #define DEBUG(...)		DBG("%(Debug%): "	);	DBG(__VA_ARGS__);
 #define WARNING(...)	WRN("%(Warning%): "	);	WRN(__VA_ARGS__);
@@ -185,3 +185,4 @@ int lfprintf(LogLevel level, FILE* stream, const char* format, ...);
 #define ASSERTION(what, pass, fail) {if (what) {pass} else {fail}
 
 #endif
+

@@ -27,3 +27,4 @@
 		ADD_SEPERATOR(LEVEL_ERR, LOG_STREAM_EXC_INTO);								\
 		EXIT_FLUSH();																\
 	}, __func__)
+

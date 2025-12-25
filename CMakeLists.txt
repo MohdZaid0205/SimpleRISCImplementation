@@ -55,3 +55,4 @@ foreach(predef_target ALL_BUILD ZERO_CHECK INSTALL PACKAGE RUN_TESTS)
         set_target_properties(${predef_target} PROPERTIES FOLDER "CMake Predefined Targets")
     endif()
 endforeach()
+
