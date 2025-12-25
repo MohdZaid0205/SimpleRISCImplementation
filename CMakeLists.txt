@@ -23,7 +23,7 @@ add_custom_target(DOCUMENTATION ALL
 # every part of this project is standalone implementation there is to be no external or
 # internal inter-executable dependencies, every (ASSEMBLER, DEBUGGER, SIMULATOR) are executable.
 # each executable has its own purpose, and requires seperate implementation.
-set(BINARY_INSTALLATION_PATH bin)
+set(BINARY_INSTALLATION_PATH "${CMAKE_SOURCE_DIR}/out"          )
 
 # SETUP ASSEMBLER `C` FOR ASSEMBLING RISC V SOURCE CODE
 set(ASSEMBLER_SRC_DIR "${CMAKE_SOURCE_DIR}/assembler/source"    )
