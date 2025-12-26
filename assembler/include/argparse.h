@@ -18,8 +18,8 @@
 // both the type of the argument (what it is) and the value (the data).         |
 //                                                                              |
 // We use a Factory Pattern approach here:                                      |
-//      argparse_argument_input("file.s") -> returns { ARGUMENT_INP, "file.s" } |
-//      argparse_argument_output("out.bin") -> returns { ARGUMENT_OUT, "out.bin"}|
+//      argparse_argument_input("file.s")   -> returns{ ARGUMENT_INP, "file.s" }|
+//      argparse_argument_output("out.bin") -> returns{ ARGUMENT_OUT, "out.bin"}|
 // -----------------------------------------------------------------------------+
 
 // [ CHANGE_LOG ] --------------------------------------------------------------+
@@ -46,6 +46,7 @@ typedef enum ASSEMBLER_ARGUMENT_TYPE{
     ARGUMENT_FMT,                   // Format specifier (bin/exe/obj)
     ARGUMENT_MAP,                   // Memory mapping/Arch specifier
     ARGUMENT_HLP,                   // Help / Usage info
+    ARGUMENT_NONE,                  // no type matched with argument
 } ArgumentType, FlagType;
 
 // struct ASSEMBLER_ARGUMENT aka AssemblerArgument & Arg
@@ -59,10 +60,6 @@ typedef struct ASSEMBLER_ARGUMENT{
     enum ASSEMBLER_ARGUMENT_TYPE type;  // The category of this argument
     const char* value;                  // The string data associated (if any)
 } AssemblerArgument, Arg;
-
-// [ FUNCTIONS ] ---------------------------------------------------------------+
-// Below are the helper functions and constructors to manage argument parsing.   |
-// -----------------------------------------------------------------------------+
 
 // argparse_get_type_for
 // Takes a raw string (like "-o", "--help", or "filename.s") and determines

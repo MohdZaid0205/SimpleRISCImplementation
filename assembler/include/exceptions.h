@@ -25,3 +25,12 @@ void    FUNCTION_NOT_IMPLEMENTED_FALLBACK();
         FUNCTION_NOT_IMPLEMENTED_FALLBACK();                                        \
 	}, __func__)}
 
+void    ARGPARSE_ARGUMENT_FLAG_FALLBACK();
+#define ARGPARSE_ARGUMENT_FLAG_EXCEPTION(flag) {EXCEPTION("Found invalid flag while"\
+    " trying to argparse flag %(%s%)\n", {                                          \
+        ERR("\tfound flag %(%s%) but no such flag is present raised  %(ARGPARSE_ARG"\
+            "UMENT_FLAG_EXCEPTION%)\n", flag);                                      \
+        ERR("use flag %(-h%) | %(--help%) to see list of all available flag\n");    \
+        ARGPARSE_ARGUMENT_FLAG_FALLBACK();                                          \
+    }, flag)}
+
