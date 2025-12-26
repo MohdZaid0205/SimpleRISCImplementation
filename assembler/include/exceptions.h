@@ -2,10 +2,7 @@
 
 // premeture macros subjected to change in future
 // helper macros to help with repetetive macros and make it easier to use
-#define EXIT_PANIC() ERR("%(Panic%): Pogram termitated due to %(explicit panic%)\n");exit(-1);
-#define EXIT_FLUSH() fflush(LOG_STREAM_GEN_INTO); fflush(LOG_STREAM_EXC_INTO); exit(-1);
-#define LOCATE_THIS_LINE() INF("\t%s:%(%d%)\n", __FILE__, __LINE__)
-#define ADD_SEPERATOR(level, stream) lfprintf(level, stream, "\n") 
+#define LOCATE_THIS_LINE() DBG("\t%s:%(%d%)\n", __FILE__, __LINE__)
 
 // exceptions that are used within this project are to be defined within this file
 // in order to deal with variants and fallbacks of required exception in case if
@@ -18,13 +15,13 @@
 // if already implemented please remove EXCEPTION from specified line			|		
 // -----------------------------------------------------------------------------+
 
+void    FUNCTION_NOT_IMPLEMENTED_FALLBACK();
 #define FUNCTION_NOT_IMPLEMENTED_EXCEPTION() {EXCEPTION("function %(%s%) has not"	\
 	" been implemented\n", {														\
 		LOCATE_THIS_LINE();															\
 		ERR("\tconsider implementing %s to avoid %(FUNCTION_NOT_IMPLEMENTED_EXCEPTI"\
 			"ON%)\n", __func__);													\
 		ERR("If already implemented please remove EXCEPTION from specified line\n");\
-		ADD_SEPERATOR(LEVEL_ERR, LOG_STREAM_EXC_INTO);								\
-		EXIT_FLUSH();																\
+        FUNCTION_NOT_IMPLEMENTED_FALLBACK();                                        \
 	}, __func__)}
 

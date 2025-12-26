@@ -29,7 +29,7 @@ typedef enum LOGGER_LEVEL_OPTION {
 
 #ifndef LOGGING_LEVEL
 	#if defined(NDEBUG)
-		#define LOGGING_LEVEL (LEVEL_WRN | LEVEL_ERR | LEVEL_FAT)
+		#define LOGGING_LEVEL (LEVEL_WRN | LEVEL_ERR | LEVEL_FAT | LEVEL_INF)
 	#else
 		#define LOGGING_LEVEL (LEVEL_ALL)
 	#endif
