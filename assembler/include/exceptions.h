@@ -1,3 +1,7 @@
+#ifndef ASSEMBLER_EXCEPTIONS_H
+#define ASSEMBLER_EXCEPTIONS_H
+
+#include "pch.h"
 #include "logging.h"
 
 // premeture macros subjected to change in future
@@ -19,6 +23,9 @@ void FUNCTION_NOT_IMPLEMENTED_EXCEPTION(
 );
 #define FNI_ARGUMENTS __func__, __FILE__, __LINE__
 
+// everything related to arg-parse, all exceptions, warnings and display mechanism
+// following line contains EXCEPTIONS then WARNINGS and then DISPLAYs.
+
 // [ IDEA ] --------------------------------------------------------------------+
 // Exception: found invalid flag while trying to parse argument <flag>          |
 //      found flag <flag> but no such flag(s) present <EXCEPTION_NAME>          |
@@ -33,3 +40,23 @@ void ARGPARSE_FLAG_NOT_RECOGNIZED_EXCEPTION(const char* flag);
 // consider renaming file with .s/.asm or provide a valid source file           |
 // -----------------------------------------------------------------------------+
 void ARGPARSE_FILE_NOT_RECOGNIZED_EXCEPTION(const char* file);
+
+// [ IDEA ] --------------------------------------------------------------------+
+// Exception: incorrect argument passed to flag <flag>                          |
+//      <arg> has been passed to <flag> but flag only recognizes                |
+//          <arg[0]> -> does what?                                              |
+//          <arg[1]> -> does what?                                              |
+//          ...                                                                 |
+//      change <arg> to resolve <EXCEPTION_TYPE>                                |
+// change argument to any of available argument, no option named <arg>          |
+// -----------------------------------------------------------------------------+
+void ARGPARSE_FLAG_ARG_INCORRECT_EXCEPTION(
+        const char* arg, const char* flag, int count, ...
+);
+
+// [ IDEA ] --------------------------------------------------------------------+
+// <indent-level> <about> := <description>                                      |
+// -----------------------------------------------------------------------------+
+void ARGPARSE_ARGUMENT_DISPLAY(int count, const char* indent, ...);
+
+#endif

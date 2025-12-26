@@ -28,18 +28,37 @@ enum ASSEMBLER_ARGUMENT_TYPE argparse_get_type_for(const char* flag){
     return ARGUMENT_NONE;
 }
 
-struct ASSEMBLER_ARGUMENT argparse_argument_input(const char* value){
-    FUNCTION_NOT_IMPLEMENTED_EXCEPTION(FNI_ARGUMENTS);
+struct ASSEMBLER_ARGUMENT argparse_argument_input  (const char* value){
+    return (struct ASSEMBLER_ARGUMENT) {
+        .type= ARGUMENT_INP, .value= value,
+    };
 }
-struct ASSEMBLER_ARGUMENT argparse_argument_output(const char* value){
-    FUNCTION_NOT_IMPLEMENTED_EXCEPTION(FNI_ARGUMENTS);
+struct ASSEMBLER_ARGUMENT argparse_argument_output (const char* value){
+    return (struct ASSEMBLER_ARGUMENT) {
+        .type= ARGUMENT_OUT, .value= value,
+    };
 }
-struct ASSEMBLER_ARGUMENT argparse_argument_format(const char* value){
-    FUNCTION_NOT_IMPLEMENTED_EXCEPTION(FNI_ARGUMENTS);
+struct ASSEMBLER_ARGUMENT argparse_argument_format (const char* value){
+    if((strcmp("bin",value) == 0 || 
+        strcmp("elf",value) == 0 ||
+        strcmp("exe",value) == 0 ) == false
+    ) {
+        ARGPARSE_FLAG_ARG_INCORRECT_EXCEPTION(value, "-[-f]ormat", 3,
+            "bin", "to generate binary file containing direct translation",
+            "elf", "containing debug information and symbols for script",
+            "exe", "to generate a platform dependent executable for script"
+        );
+    }
+
+    return (struct ASSEMBLER_ARGUMENT){
+        .type= ARGUMENT_FMT, .value= value,
+    };
 }
 struct ASSEMBLER_ARGUMENT argparse_argument_mapping(const char* value){
     FUNCTION_NOT_IMPLEMENTED_EXCEPTION(FNI_ARGUMENTS);
 }
-struct ASSEMBLER_ARGUMENT argparse_argument_help(const char* value){
-    FUNCTION_NOT_IMPLEMENTED_EXCEPTION(FNI_ARGUMENTS);
+struct ASSEMBLER_ARGUMENT argparse_argument_help   (const char* value){
+    return (struct ASSEMBLER_ARGUMENT){
+        .type= ARGUMENT_HLP, .value= "HELP",
+    };
 }
