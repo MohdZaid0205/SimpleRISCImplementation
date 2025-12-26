@@ -18,7 +18,7 @@
 // if already implemented please remove EXCEPTION from specified line			|		
 // -----------------------------------------------------------------------------+
 
-#define FUNCTION_NOT_IMPLEMENTED_EXCEPTION() EXCEPTION("function %(%s%) has not"	\
+#define FUNCTION_NOT_IMPLEMENTED_EXCEPTION() {EXCEPTION("function %(%s%) has not"	\
 	" been implemented\n", {														\
 		LOCATE_THIS_LINE();															\
 		ERR("\tconsider implementing %s to avoid %(FUNCTION_NOT_IMPLEMENTED_EXCEPTI"\
@@ -26,5 +26,5 @@
 		ERR("If already implemented please remove EXCEPTION from specified line\n");\
 		ADD_SEPERATOR(LEVEL_ERR, LOG_STREAM_EXC_INTO);								\
 		EXIT_FLUSH();																\
-	}, __func__)
+	}, __func__)}
 
