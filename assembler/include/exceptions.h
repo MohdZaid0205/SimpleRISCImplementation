@@ -10,27 +10,26 @@
 
 // [ IDEA ] --------------------------------------------------------------------+
 // Exception: function <name> has not been implemented							|
-//		~/home/user/.../project/file.c:line										|
-//		consider implementing <name> to avoid FUNCTION_NOT_IMPLEMENTED_EXCEPTION|
+//		~/home/user/.../project/file.c:<line>									|
+//		consider implementing <name> to avoid <EXCEPTION_NAME>                  |
 // if already implemented please remove EXCEPTION from specified line			|		
 // -----------------------------------------------------------------------------+
+void FUNCTION_NOT_IMPLEMENTED_EXCEPTION(
+        const char* fun, const char* file, int line
+);
+#define FNI_ARGUMENTS __func__, __FILE__, __LINE__
 
-void    FUNCTION_NOT_IMPLEMENTED_FALLBACK();
-#define FUNCTION_NOT_IMPLEMENTED_EXCEPTION() {EXCEPTION("function %(%s%) has not"	\
-	" been implemented\n", {														\
-		LOCATE_THIS_LINE();															\
-		ERR("\tconsider implementing %s to avoid %(FUNCTION_NOT_IMPLEMENTED_EXCEPTI"\
-			"ON%)\n", __func__);													\
-		ERR("If already implemented please remove EXCEPTION from specified line\n");\
-        FUNCTION_NOT_IMPLEMENTED_FALLBACK();                                        \
-	}, __func__)}
+// [ IDEA ] --------------------------------------------------------------------+
+// Exception: found invalid flag while trying to parse argument <flag>          |
+//      found flag <flag> but no such flag(s) present <EXCEPTION_NAME>          |
+// remove specified flag or use -h || --help to find suitable flags             |
+// -----------------------------------------------------------------------------+
+void ARGPARSE_FLAG_NOT_RECOGNIZED_EXCEPTION(const char* flag);
 
-void    ARGPARSE_ARGUMENT_FLAG_FALLBACK();
-#define ARGPARSE_ARGUMENT_FLAG_EXCEPTION(flag) {EXCEPTION("Found invalid flag while"\
-    " trying to argparse flag %(%s%)\n", {                                          \
-        ERR("\tfound flag %(%s%) but no such flag is present raised  %(ARGPARSE_ARG"\
-            "UMENT_FLAG_EXCEPTION%)\n", flag);                                      \
-        ERR("use flag %(-h%) | %(--help%) to see list of all available flag\n");    \
-        ARGPARSE_ARGUMENT_FLAG_FALLBACK();                                          \
-    }, flag)}
-
+// [ IDEA ] --------------------------------------------------------------------+
+// Exception: found unrecognized file extension for file:<file>                 |
+//      assembler supports only .s or .asm as file extension for source         |
+//      found a invalid source extension <src>:<EXCEPTION_NAME>                 |
+// consider renaming file with .s/.asm or provide a valid source file           |
+// -----------------------------------------------------------------------------+
+void ARGPARSE_FILE_NOT_RECOGNIZED_EXCEPTION(const char* file);
