@@ -71,6 +71,7 @@ void ARGPARSE_FLAG_ARG_INCORRECT_EXCEPTION(
         ERR("change argument for %(%s%) to any of valid available options\n", flag);
     }, flag);
     va_end(arguments);
+    EXIT_ON_FALLBACK(-1);
 }
 
 void ARGPARSE_ARGUMENT_DISPLAY(int count, const char* indent, ...){
