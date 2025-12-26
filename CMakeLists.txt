@@ -20,24 +20,8 @@ add_custom_target(DOCUMENTATION ALL
     VERBATIM
 )
 
-# every part of this project is standalone implementation there is to be no external or
-# internal inter-executable dependencies, every (ASSEMBLER, DEBUGGER, SIMULATOR) are executable.
-# each executable has its own purpose, and requires seperate implementation.
-set(BINARY_INSTALLATION_PATH "${CMAKE_SOURCE_DIR}/out"          )
 
-# SETUP ASSEMBLER `C` FOR ASSEMBLING RISC V SOURCE CODE
-set(ASSEMBLER_SRC_DIR "${CMAKE_SOURCE_DIR}/assembler/source"    )
-set(ASSEMBLER_INC_DIR "${CMAKE_SOURCE_DIR}/assembler/include"   )
-set(ASSEMBLER_INSTALLATION_NAME "simple-risc5-asm.exe"              )
-file(GLOB ASSEMBLER_FILES "${ASSEMBLER_SRC_DIR}/*.c" "${ASSEMBLER_INC_DIR}/*.h")
-
-add_executable(ASSEMBLER ${ASSEMBLER_FILES})
-target_include_directories(ASSEMBLER PRIVATE ${ASSEMBLER_INC_DIR})
-target_precompile_headers(ASSEMBLER PRIVATE "${ASSEMBLER_INC_DIR}/pch.h")
-install(PROGRAMS $<TARGET_FILE:ASSEMBLER> DESTINATION ${BINARY_INSTALLATION_PATH} 
-                RENAME ${ASSEMBLER_INSTALLATION_NAME})
-
-# For predefined targets
+# For predefined targets put them all into a folder (if possible)
 foreach(predef_target ALL_BUILD ZERO_CHECK INSTALL PACKAGE RUN_TESTS)
     if(TARGET ${predef_target})
         set_target_properties(${predef_target} PROPERTIES FOLDER "CMake Predefined Targets")
