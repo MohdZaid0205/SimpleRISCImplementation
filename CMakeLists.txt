@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(PROJ_NAME "Simple RISC"     )   # this is implementation of simple RISC.
+set(PROJ_NAME "HMASM"           )   # this is implementation of assembler.
 set(PROJ_LANG LANGUAGES C       )   # to be written in pure `C` no external libs.
-set(PROJ_VERS VERSION  0.00.1   )   # need to make sure to change this version.
-set(PROJ_DESC DESCRIPTION "stripped down implementation of riscV.")
+set(PROJ_VERS VERSION  0.00.2   )   # need to make sure to change this version.
+set(PROJ_DESC DESCRIPTION "stripped down implementation of assembler.")
 
 project(${PROJ_NAME} ${PROJ_DESC} ${PROJ_LANG} ${PROJ_VERS})
 
