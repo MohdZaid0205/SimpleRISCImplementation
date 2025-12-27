@@ -43,7 +43,7 @@ if (DEFINED INSTALL_IN_SYSTEM)
     message(STATUS "System install enabled (Value: ${INSTALL_IN_SYSTEM})")
     set(TARGET_INSTALL_PATH bin)
 else()
-    set(TARGET_INSTALL_PATH "${CMAKE_SOURCE_DIR}/out/")
+    set(TARGET_INSTALL_PATH "${CMAKE_SOURCE_DIR}/bin")
 endif()
 
 # BUILD and LOG about each target during building such target and install to path
