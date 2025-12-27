@@ -65,19 +65,39 @@
   "buildPresets": [
     {
       "name": "windows-debug-build",
-      "configurePreset": "windows-debug"
+      "configurePreset": "windows-debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     },
     {
       "name": "windows-release-build",
-      "configurePreset": "windows-release"
+      "configurePreset": "windows-release",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     },
     {
       "name": "ubuntu-debug-build",
-      "configurePreset": "ubuntu-debug"
+      "configurePreset": "ubuntu-debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
     },
     {
       "name": "ubuntu-release-build",
-      "configurePreset": "ubuntu-release"
+      "configurePreset": "ubuntu-release",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
     }
   ]
 }
