@@ -33,6 +33,11 @@ winget install Kitware.CMake
 winget install Ninja-build.Ninja
 ```
 
+```bash
+sudo apt install cmake
+sudo apt install make
+```
+
 Verify build tools installation by.
 ```
 cmake --version
@@ -78,4 +83,4 @@ hmasm-<fmt>-<isa> <flags> <file[s]>
 
 ## Contributions
 
-this project was built and planned solely by [Mohd Zaid](https://github.com/MohdZaid0205) (developer) while [Rishabh Gupta](https://github.com/RishabhGuptaGH) (contributer) did help with language [GRAMMAR](#)
+this project was built and planned solely by [Mohd Zaid](https://github.com/MohdZaid0205) (developer) while [Rishabh Gupta](https://github.com/RishabhGuptaGH) (contributer) did help with language [GRAMMAR](https://github.com/MohdZaid0205/hmasm/blame/8096afb26ca7538e3dd216526bbefeac18f0bcaf/resources/grammar.txt) which was later declared DEPRECATED. 
