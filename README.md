@@ -75,3 +75,7 @@ hmasm-<fmt>-<isa> <flags> <file[s]>
 ```
 
 > usage is incomplete until project is in usable state
+
+## Contributions
+
+this project was built and planned solely by [Mohd Zaid](https://github.com/MohdZaid0205) (developer) while [Rishabh Gupta](https://github.com/RishabhGuptaGH) (contributer) did help with language [GRAMMAR](#)
