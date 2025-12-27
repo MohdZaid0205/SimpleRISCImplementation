@@ -1,4 +1,8 @@
-#include "assembler.h"
+#include "pch.h"
+#include "logging.h"
+#include "argparse.h"
+#include "lexer.h"
+#include "isa.h"
 
 int main(int argc, char** argv){
     
@@ -28,5 +32,7 @@ int main(int argc, char** argv){
         }
         i++;
     }
+
+    LOG("name of isa:%s\n", assembler_isa_name);
     return 0;
 }
